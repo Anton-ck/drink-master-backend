@@ -3,7 +3,11 @@ import logger from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger.json" assert { type: "json" };
+
+const swaggerDocument = await import("./swagger.json", {
+  assert: { type: "json" },
+});
+
 
 import authRouter from "./routes/api/auth.js";
 import subscribeRouter from "./routes/api/subscribe.js";
@@ -14,6 +18,8 @@ import glassesRouter from "./routes/api/glasses.js";
 import ownRouter from "./routes/api/ownRecipes.js";
 import favoriteRouter from "./routes/api/favorite.js";
 import popularRecipes from "./routes/api/popularRecipes.js";
+
+const { name, version } = swaggerDocument;
 
 dotenv.config();
 

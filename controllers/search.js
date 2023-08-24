@@ -1,8 +1,8 @@
 
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
-import Recipe from "../../models/recipes";
-import Ingredient from "../../models/ingredients";
+import Recipe  from "../models/recipes.js"; 
+import Ingredient from "../models/ingredients.js";
 
 const getSearchRecipes = async (req, res) => {
     const { type, query } = req.query;

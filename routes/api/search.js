@@ -1,8 +1,8 @@
 import express from "express";
-import getSearchRecipes from "../../controllers/search"
+import controllers from "../../controllers/search.js";
 
 const router = express.Router();
 
-router.get("/", getSearchRecipes);
+router.get("/", controllers.getSearchRecipes);
 
 export default router;

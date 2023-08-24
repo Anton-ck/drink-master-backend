@@ -4,8 +4,10 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import Ingredient from "../models/ingredients.js";
 
 const getIngredientsList = async (req, res) => {
-	const ingredients = await Ingredient.find();
-	res.json(ingredients);
+  const ingredients = await Ingredient.find();
+  res.json(ingredients);
 };
 
-export default  ctrlWrapper(getIngredientsList) ;
+export default {
+  getIngredientsList: ctrlWrapper(getIngredientsList),
+};

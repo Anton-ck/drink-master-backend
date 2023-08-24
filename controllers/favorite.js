@@ -1,29 +1,75 @@
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
-// import Cocktail from "../models/favorite.js";
+import Cocktail from "../models/recipes.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-const updateFavorite = async (req, res) => {
-  const recipId = req.params.recipId;
-  console.log("req", req.params.recipId);
+dotenv.config();
 
-  //   const result = await Cocktail.findByIdAndUpdate(
-  //     recipId,
-  //     { $push: { users_favorite: userId } },
-  //     {
-  //       new: true,
-  //     }
-  //   );
-  res.status(200).json({ message: "Элемент добавлен в избранное" });
+const { SECRET_KEY } = process.env;
+
+const addFavorite = async (req, res) => {
+  const { authorization = "" } = req.headers;
+  const [bearer, token] = authorization.split(" ");
+  const { id } = jwt.verify(token, SECRET_KEY);
+  const cocktailId = req.params.recipId;
+
+  const result = await Cocktail.findByIdAndUpdate(
+    cocktailId,
+    { $push: { usersFavorite: id } },
+    {
+      new: true,
+    }
+  );
+  res.status(201).json({ message: "Элемент добавлен в избранное" });
 };
-// const getFavorites = (req, res) => {
-//   const itemId = req.params.itemId;
 
-//   // Предположим, favorites - это ваш контейнер избранных элементов
-//   favorites.push(itemId);
+const deleteFavorite = async (req, res) => {
+  const { authorization = "" } = req.headers;
+  const [bearer, token] = authorization.split(" ");
+  const { id } = jwt.verify(token, SECRET_KEY);
+  const cocktailId = req.params.recipId;
 
-//   res.status(200).json({ message: "Элемент добавлен в избранное" });
-// };
+  const result = await Cocktail.findByIdAndUpdate(
+    cocktailId,
+    { $pull: { usersFavorite: id } },
+    {
+      new: true,
+    }
+  );
+  res.json({ message: "Элемент удален из избранных" });
+};
+
+const getFavorites = async (req, res) => {
+  const { authorization = "" } = req.headers;
+  const [bearer, token] = authorization.split(" ");
+  const { id } = jwt.verify(token, SECRET_KEY);
+
+  const { page = 1, limit = 4, ...query } = req.query;
+
+  const skip = (page - 1) * limit;
+
+  const result = await Cocktail.find(
+    { usersFavorite: id, ...query },
+    "-createdAt -updatedAt",
+    {
+      skip,
+      limit,
+    }
+  );
+  const array = result.map((cocktail) => {
+    return {
+      drink: cocktail.drink,
+      alcoholic: cocktail.alcoholic,
+      glass: cocktail.glass,
+      instructions: cocktail.instructions,
+    };
+  });
+  res.json(array);
+};
 
 export default {
-  updateFavorite: ctrlWrapper(updateFavorite),
+  addFavorite: ctrlWrapper(addFavorite),
+  deleteFavorite: ctrlWrapper(deleteFavorite),
+  getFavorites: ctrlWrapper(getFavorites),
 };

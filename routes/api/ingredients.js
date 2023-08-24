@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get("/list", getIngredientsList);
 
-// router.get('/', authenticate, getIngredientBy)
+// router.get('/', authenticate, getReceiptByIngredient)
 
 export default router;

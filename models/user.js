@@ -6,10 +6,9 @@ import emailRegexp from "../helpers/regExp.js";
 
 const userSchema = new Schema(
   {
-    password: {
+    name: {
       type: String,
-      minlength: 6,
-      required: [true, "Set password for user"],
+      required: true,
     },
     email: {
       type: String,
@@ -17,10 +16,10 @@ const userSchema = new Schema(
       match: emailRegexp,
       unique: true,
     },
-    subscription: {
+    password: {
       type: String,
-      enum: ["starter", "pro", "business"],
-      default: "starter",
+      minlength: 6,
+      required: [true, "Set password for user"],
     },
     token: {
       type: String,
@@ -29,14 +28,6 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
       required: true,
-    },
-    verify: {
-      type: Boolean,
-      default: false,
-    },
-    verificationToken: {
-      type: String,
-      required: [true, "Verify token is required"],
     },
   },
   { versionKey: false, timestamps: true }

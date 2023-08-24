@@ -1,7 +1,7 @@
 import express from "express";
+import controllers from "../../controllers/glasses.js";
+const glassesRouter = express.Router();
 
-const router = express.Router();
+glassesRouter.get("/", controllers.getGlasses);
 
-router.get("/");
-
-export default router;
+export default glassesRouter;

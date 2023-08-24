@@ -51,9 +51,9 @@ const loginUser = async (req, res) => {
     throw HttpError(401, "Email is wrong");
   }
 
-  if (!user.verify) {
-    throw HttpError(401, "Verification invalid");
-  }
+  // if (!user.verify) {
+  //   throw HttpError(401, "Verification invalid");
+  // }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
 
@@ -111,7 +111,10 @@ const updateAvatar = async (req, res) => {
 
   const reziseImg = await Jimp.read(tempDir);
 
-  reziseImg.autocrop().cover(250, 250).writeAsync(`${tempDirResize}/${resizeFileName}`);
+  reziseImg
+    .autocrop()
+    .cover(250, 250)
+    .writeAsync(`${tempDirResize}/${resizeFileName}`);
 
   await fs.unlink(tempDir);
   await fs.rename(resizeResultUpload, resultUpload);

@@ -16,7 +16,10 @@ const validateBody = (schema) => {
           throw HttpError(400, `Missing required ${error.details[0].message}`);
 
         case "string.pattern.base":
-          throw HttpError(400, `${errorContext.key} ${errorContext.value} is invalid!`);
+          throw HttpError(
+            400,
+            `${errorContext.key} ${errorContext.value} is invalid!`
+          );
 
         default:
           throw HttpError(400, `${error.message}`);

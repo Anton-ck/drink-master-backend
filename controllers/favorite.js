@@ -8,18 +8,14 @@ const addFavorite = async (req, res) => {
   const { _id } = req.user;
   const userId = _id.toString();
   const cocktailId = req.params.recipId;
+  console.log("req.params", req.params);
+  console.log("cocktailId", cocktailId);
 
-  //check cocktail on favorite and in db
-  try {
-    const cocktail = await Cocktail.findById(cocktailId);
-
-    if (cocktail.usersFavorite.includes(userId)) {
-      return res.status(409).json({ message: "Favorite cocktail added early" });
-    }
-  } catch (error) {
-    throw HttpError(404, `Cocktail with id=${cocktailId} not found`);
+  //check cocktail on favorite
+  const cocktail = await Cocktail.findById(cocktailId);
+  if (cocktail.usersFavorite.includes(userId)) {
+    return res.status(409).json({ message: "Favorite cocktail added early" });
   }
-
   //if new cocktail for user,  then add to favorite
   await Cocktail.findByIdAndUpdate(
     cocktailId,
@@ -38,17 +34,12 @@ const deleteFavorite = async (req, res) => {
   const userId = _id.toString();
   const cocktailId = req.params.recipId;
 
-  //check cocktail on favorite and in db
-  try {
-    const cocktail = await Cocktail.findById(cocktailId);
+  //check cocktail on favorite
 
-    if (!cocktail.usersFavorite.includes(userId)) {
-      return res
-        .status(409)
-        .json({ message: "Favorite cocktail deleted early" });
-    }
-  } catch (error) {
-    throw HttpError(404, `Cocktail with id=${cocktailId} not found`);
+  const cocktail = await Cocktail.findById(cocktailId);
+
+  if (!cocktail.usersFavorite.includes(userId)) {
+    return res.status(409).json({ message: "Favorite cocktail deleted early" });
   }
 
   await Cocktail.findByIdAndUpdate(
@@ -80,6 +71,9 @@ const getFavorites = async (req, res) => {
   //     instructions: cocktail.instructions,
   //   };
   // });
+  if (result.length === 0) {
+    return res.json({ message: "Not any favorite cocktails" });
+  }
   res.json([{ quantityOfFavorites: result.length }, ...result]);
 };
 

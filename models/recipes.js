@@ -1,11 +1,11 @@
 import { Schema, model } from "mongoose";
 
-// import handleMongooseError from "../helpers/handleMongooseError.js";
+import handleMongooseError from "../helpers/handleMongooseError.js";
 const cocktailSchema = new Schema(
   {
     drink: {
       type: String,
-      required: true,
+      required: [true, "Drink name is required"],
     },
     drinkAlternate: {
       type: String,
@@ -16,12 +16,16 @@ const cocktailSchema = new Schema(
     video: {
       type: String,
     },
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+    },
     IBA: {
       type: String,
     },
     alcoholic: {
       type: String,
-      required: true,
+      required: [true, "Alcoholic is required"],
     },
     glass: {
       type: String,
@@ -55,6 +59,7 @@ const cocktailSchema = new Schema(
     },
     ingredients: {
       type: Array,
+      required: [true, "Ingredients is required"],
     },
     usersFavorite: {
       type: Array,
@@ -62,6 +67,8 @@ const cocktailSchema = new Schema(
   },
   { versionKey: false }
 );
+
+cocktailSchema.post("save", handleMongooseError);
 
 const Cocktail = model("cocktail", cocktailSchema);
 

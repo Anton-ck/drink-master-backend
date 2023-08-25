@@ -97,29 +97,13 @@ const updateUserName = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+
   if (!req.file) {
     throw HttpError(404, "File not found for upload");
   }
-  const { _id } = req.user;
-  const { path: tempDir, originalname } = req.file;
 
-  const sizeImg = "250x250_";
-  const fileName = `${_id}_${originalname}`;
-  const resizeFileName = `${sizeImg}${fileName}`;
-  const resultUpload = path.join(avatarsDir, resizeFileName);
-  const resizeResultUpload = path.join(tempDirResize, resizeFileName);
-
-  const reziseImg = await Jimp.read(tempDir);
-
-  reziseImg
-    .autocrop()
-    .cover(250, 250)
-    .writeAsync(`${tempDirResize}/${resizeFileName}`);
-
-  await fs.unlink(tempDir);
-  await fs.rename(resizeResultUpload, resultUpload);
-
-  const avatarURL = path.join("avatars", resizeFileName);
+  const avatarURL = req.file.path;
 
   await User.findByIdAndUpdate(_id, { avatarURL });
 

@@ -11,9 +11,9 @@ import controllers from "../../controllers/auth.js";
 
 const router = express.Router();
 
-router.post("/register", isEmptyBody, validateBody(registerSchema), controllers.registerUser);
+router.post("/signup", isEmptyBody, validateBody(registerSchema), controllers.signUp);
 
-router.post("/login", isEmptyBody, validateBody(loginSchema), controllers.loginUser);
+router.post("/signin", isEmptyBody, validateBody(loginSchema), controllers.signIn);
 
 router.get("/current", authenticate, controllers.getCurrentUser);
 

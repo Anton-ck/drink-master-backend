@@ -17,7 +17,7 @@ const { SECRET_KEY, BASE_URL } = process.env;
 const avatarsDir = path.resolve("avatars");
 const tempDirResize = path.resolve("resize");
 
-const registerUser = async (req, res) => {
+const signUp = async (req, res) => {
   const { name, email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -42,7 +42,7 @@ const registerUser = async (req, res) => {
   });
 };
 
-const loginUser = async (req, res) => {
+const signIn = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -129,8 +129,8 @@ const updateAvatar = async (req, res) => {
 };
 
 export default {
-  registerUser: ctrlWrapper(registerUser),
-  loginUser: ctrlWrapper(loginUser),
+  signUp: ctrlWrapper(signUp),
+  signIn: ctrlWrapper(signIn),
   getCurrentUser: ctrlWrapper(getCurrentUser),
   logoutUser: ctrlWrapper(logoutUser),
   updateUserName: ctrlWrapper(updateUserName),

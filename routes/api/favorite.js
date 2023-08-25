@@ -4,13 +4,19 @@ import authenticate from "../../middlewares/authenticate.js";
 
 const favoriteRouter = express.Router();
 favoriteRouter.use(authenticate);
-// router.get("/");
+
+favoriteRouter.get("/", controllers.getFavorites);
+
+favoriteRouter.delete(
+  "/:recipId",
+  //   isValid,
+  controllers.deleteFavorite
+);
+
 favoriteRouter.patch(
   "/:recipId",
-  //   validation.isValidId,
-  //   validation.isEmptyBody,
-  //   validation.validateBody(contactSchema.contactUpdateFavoriteSchema),
-  controllers.updateFavorite
+  //   isValid,
+  controllers.addFavorite
 );
 
 export default favoriteRouter;

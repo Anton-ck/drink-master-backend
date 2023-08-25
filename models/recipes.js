@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import categories from "../DB/categories.json" assert { type: "json" };
+import glassess from "../DB/glassess.json" assert { type: "json" };
 
 // import handleMongooseError from "../helpers/handleMongooseError.js";
 const cocktailSchema = new Schema(
@@ -16,18 +18,28 @@ const cocktailSchema = new Schema(
     video: {
       type: String,
     },
+    description: {
+      type: String,
+    },
+    category: {
+      type: String,
+      enum: categories,
+      required: true,
+    },
     IBA: {
       type: String,
     },
     alcoholic: {
       type: String,
-      required: true,
     },
     glass: {
       type: String,
+      enum: glassess,
+      required: true,
     },
     instructions: {
       type: String,
+      required: true,
     },
     instructionsES: {
       type: String,
@@ -52,15 +64,22 @@ const cocktailSchema = new Schema(
     },
     drinkThumb: {
       type: String,
+      // required: true,
     },
     ingredients: {
       type: Array,
+      required: true,
     },
     usersFavorite: {
       type: Array,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 const Cocktail = model("cocktail", cocktailSchema);

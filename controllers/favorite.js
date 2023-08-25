@@ -1,71 +1,86 @@
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import Cocktail from "../models/recipes.js";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 
-dotenv.config();
-
-const { SECRET_KEY } = process.env;
+//add cocktail in favorite
 
 const addFavorite = async (req, res) => {
-  const { authorization = "" } = req.headers;
-  const [bearer, token] = authorization.split(" ");
-  const { id } = jwt.verify(token, SECRET_KEY);
+  const { _id } = req.user;
+  const userId = _id.toString();
   const cocktailId = req.params.recipId;
 
-  const result = await Cocktail.findByIdAndUpdate(
+  //check cocktail on favorite and in db
+  try {
+    const cocktail = await Cocktail.findById(cocktailId);
+
+    if (cocktail.usersFavorite.includes(userId)) {
+      return res.status(409).json({ message: "Favorite cocktail added early" });
+    }
+  } catch (error) {
+    throw HttpError(404, `Cocktail with id=${cocktailId} not found`);
+  }
+
+  //if new cocktail for user,  then add to favorite
+  await Cocktail.findByIdAndUpdate(
     cocktailId,
-    { $push: { usersFavorite: id } },
+    { $push: { usersFavorite: userId } },
     {
       new: true,
     }
   );
-  res.status(201).json({ message: "Элемент добавлен в избранное" });
+
+  res.json({ message: "Cocktail added to favorite" });
 };
 
+//delete cocktail from favorite
 const deleteFavorite = async (req, res) => {
-  const { authorization = "" } = req.headers;
-  const [bearer, token] = authorization.split(" ");
-  const { id } = jwt.verify(token, SECRET_KEY);
+  const { _id } = req.user;
+  const userId = _id.toString();
   const cocktailId = req.params.recipId;
 
-  const result = await Cocktail.findByIdAndUpdate(
+  //check cocktail on favorite and in db
+  try {
+    const cocktail = await Cocktail.findById(cocktailId);
+
+    if (!cocktail.usersFavorite.includes(userId)) {
+      return res
+        .status(409)
+        .json({ message: "Favorite cocktail deleted early" });
+    }
+  } catch (error) {
+    throw HttpError(404, `Cocktail with id=${cocktailId} not found`);
+  }
+
+  await Cocktail.findByIdAndUpdate(
     cocktailId,
-    { $pull: { usersFavorite: id } },
+    { $pull: { usersFavorite: userId.toString() } },
     {
       new: true,
     }
   );
-  res.json({ message: "Элемент удален из избранных" });
+  res.json({ message: "Cocktail deleted  from favorite" });
 };
 
+//get all favorite cocktails by user
 const getFavorites = async (req, res) => {
-  const { authorization = "" } = req.headers;
-  const [bearer, token] = authorization.split(" ");
-  const { id } = jwt.verify(token, SECRET_KEY);
-
-  const { page = 1, limit = 4, ...query } = req.query;
-
-  const skip = (page - 1) * limit;
+  const { _id } = req.user;
+  const userId = _id.toString();
 
   const result = await Cocktail.find(
-    { usersFavorite: id, ...query },
-    "-createdAt -updatedAt",
-    {
-      skip,
-      limit,
-    }
+    { usersFavorite: userId },
+    "-usersFavorite "
   );
-  const array = result.map((cocktail) => {
-    return {
-      drink: cocktail.drink,
-      alcoholic: cocktail.alcoholic,
-      glass: cocktail.glass,
-      instructions: cocktail.instructions,
-    };
-  });
-  res.json(array);
+  //return array of need fields
+  // const array = result.map((cocktail) => {
+  //   return {
+  //     id: cocktail._id,
+  //     drink: cocktail.drink,
+  //     alcoholic: cocktail.alcoholic,
+  //     glass: cocktail.glass,
+  //     instructions: cocktail.instructions,
+  //   };
+  // });
+  res.json([{ quantityOfFavorites: result.length }, ...result]);
 };
 
 export default {

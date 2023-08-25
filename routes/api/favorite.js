@@ -9,17 +9,13 @@ favoriteRouter.get("/", controllers.getFavorites);
 
 favoriteRouter.delete(
   "/:recipId",
-  //   validation.isValidId,
-  //   validation.isEmptyBody,
-  //   validation.validateBody(contactSchema.contactUpdateFavoriteSchema),
+  //   isValid,
   controllers.deleteFavorite
 );
 
 favoriteRouter.patch(
   "/:recipId",
-  //   validation.isValidId,
-  //   validation.isEmptyBody,
-  //   validation.validateBody(contactSchema.contactUpdateFavoriteSchema),
+  //   isValid,
   controllers.addFavorite
 );
 

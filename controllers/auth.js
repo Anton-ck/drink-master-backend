@@ -1,10 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import gravatar from "gravatar";
-import path from "path";
-import fs from "fs/promises";
-import Jimp from "jimp";
 
 import User from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
@@ -13,9 +9,6 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 dotenv.config();
 
 const { SECRET_KEY, BASE_URL } = process.env;
-
-const avatarsDir = path.resolve("avatars");
-const tempDirResize = path.resolve("resize");
 
 const signUp = async (req, res) => {
   const { name, email, password } = req.body;
@@ -26,12 +19,9 @@ const signUp = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
 
-  const avatarURL = gravatar.url(email);
-
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
   });
 
   res.status(201).json({

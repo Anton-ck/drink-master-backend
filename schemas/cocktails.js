@@ -1,4 +1,6 @@
 import Joi from "joi";
+import categories from "../DB/categories.json" assert { type: "json" };
+import glassess from "../DB/glassess.json" assert { type: "json" };
 
 export const cocktailSchema = Joi.object({
   drink: Joi.string().min(2).required(),
@@ -6,11 +8,15 @@ export const cocktailSchema = Joi.object({
   tags: Joi.string(),
   video: Joi.string(),
   description: Joi.string(),
-  category: Joi.string().required(),
+  category: Joi.string()
+    .valid(...categories)
+    .required(),
   IBA: Joi.string(),
-  alcoholic: Joi.string(),
-  glass: Joi.string().required(),
-  instructions: Joi.string().min(3).required(),
+  alcoholic: Joi.string().required(),
+  glass: Joi.string()
+    .valid(...glassess)
+    .required(),
+  instructions: Joi.string().min(30).required(),
   instructionsES: Joi.string(),
   instructionsDE: Joi.string(),
   instructionsFR: Joi.string(),
@@ -19,6 +25,6 @@ export const cocktailSchema = Joi.object({
   instructionsPL: Joi.string(),
   instructionsUK: Joi.string(),
   drinkThumb: Joi.string(),
-  ingredients: Joi.array().items(Joi.string().required()).required(),
+  ingredients: Joi.array().items(Joi.string().required()).min(2).required(),
   usersFavorite: Joi.array().items(Joi.string()),
 });

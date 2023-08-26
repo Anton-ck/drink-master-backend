@@ -2,12 +2,14 @@ import { Schema, model } from "mongoose";
 import categories from "../DB/categories.json" assert { type: "json" };
 import glassess from "../DB/glassess.json" assert { type: "json" };
 
-// import handleMongooseError from "../helpers/handleMongooseError.js";
+import handleMongooseError from "../helpers/handleMongooseError.js";
+
 const cocktailSchema = new Schema(
   {
     drink: {
       type: String,
-      required: true,
+      minlength: 2,
+      required: [true, "Drink name is required"],
     },
     drinkAlternate: {
       type: String,
@@ -24,22 +26,24 @@ const cocktailSchema = new Schema(
     category: {
       type: String,
       enum: categories,
-      required: true,
+      required: [true, "Category is required"],
     },
     IBA: {
       type: String,
     },
     alcoholic: {
       type: String,
+      required: [true, "Type of drink is required"],
     },
     glass: {
       type: String,
       enum: glassess,
-      required: true,
+      required: [true, "Type of glass is required"],
     },
     instructions: {
       type: String,
-      required: true,
+      minlength: 30,
+      required: [true, "Instructions is required"],
     },
     instructionsES: {
       type: String,
@@ -68,7 +72,7 @@ const cocktailSchema = new Schema(
     },
     ingredients: {
       type: Array,
-      required: true,
+      required: [true, "Ingredients is required"],
     },
     usersFavorite: {
       type: Array,
@@ -81,6 +85,8 @@ const cocktailSchema = new Schema(
   },
   { versionKey: false, timestamps: true }
 );
+
+cocktailSchema.post("save", handleMongooseError);
 
 const Cocktail = model("cocktail", cocktailSchema);
 

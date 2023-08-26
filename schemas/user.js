@@ -18,8 +18,3 @@ export const updateUserName = Joi.object({
   name: Joi.string().required(),
 });
 
-export const userEmailSchema = Joi.object({
-  email: Joi.string().pattern(new RegExp(emailRegexp)).required().messages({
-    "any.required": "missing required email field",
-  }),
-});

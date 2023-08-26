@@ -17,3 +17,4 @@ export const loginSchema = Joi.object({
 export const updateUserName = Joi.object({
   name: Joi.string().required(),
 });
+

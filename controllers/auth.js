@@ -1,10 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import gravatar from "gravatar";
-import path from "path";
-import fs from "fs/promises";
-import Jimp from "jimp";
 
 import User from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
@@ -12,12 +8,9 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
 dotenv.config();
 
-const { SECRET_KEY, BASE_URL } = process.env;
+const { SECRET_KEY } = process.env;
 
-const avatarsDir = path.resolve("avatars");
-const tempDirResize = path.resolve("resize");
-
-const registerUser = async (req, res) => {
+const signUp = async (req, res) => {
   const { name, email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -26,12 +19,9 @@ const registerUser = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
 
-  const avatarURL = gravatar.url(email);
-
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
   });
 
   res.status(201).json({
@@ -42,7 +32,7 @@ const registerUser = async (req, res) => {
   });
 };
 
-const loginUser = async (req, res) => {
+const signIn = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -97,29 +87,13 @@ const updateUserName = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+
   if (!req.file) {
     throw HttpError(404, "File not found for upload");
   }
-  const { _id } = req.user;
-  const { path: tempDir, originalname } = req.file;
 
-  const sizeImg = "250x250_";
-  const fileName = `${_id}_${originalname}`;
-  const resizeFileName = `${sizeImg}${fileName}`;
-  const resultUpload = path.join(avatarsDir, resizeFileName);
-  const resizeResultUpload = path.join(tempDirResize, resizeFileName);
-
-  const reziseImg = await Jimp.read(tempDir);
-
-  reziseImg
-    .autocrop()
-    .cover(250, 250)
-    .writeAsync(`${tempDirResize}/${resizeFileName}`);
-
-  await fs.unlink(tempDir);
-  await fs.rename(resizeResultUpload, resultUpload);
-
-  const avatarURL = path.join("avatars", resizeFileName);
+  const avatarURL = req.file.path;
 
   await User.findByIdAndUpdate(_id, { avatarURL });
 
@@ -129,8 +103,8 @@ const updateAvatar = async (req, res) => {
 };
 
 export default {
-  registerUser: ctrlWrapper(registerUser),
-  loginUser: ctrlWrapper(loginUser),
+  signUp: ctrlWrapper(signUp),
+  signIn: ctrlWrapper(signIn),
   getCurrentUser: ctrlWrapper(getCurrentUser),
   logoutUser: ctrlWrapper(logoutUser),
   updateUserName: ctrlWrapper(updateUserName),

@@ -28,6 +28,10 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
     },
+    subscription: {
+      type: Boolean,
+      default: false
+    }
   },
   { versionKey: false, timestamps: true }
 );

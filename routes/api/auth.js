@@ -1,6 +1,6 @@
 import express from "express";
 
-import { registerSchema, loginSchema, updateUserName } from "../../schemas/user.js";
+import { registerSchema, loginSchema, updateUserName, userEmailSchema } from "../../schemas/user.js";
 
 import validateBody from "../../middlewares/validateBody.js";
 import isEmptyBody from "../../middlewares/isEmptyBody.js";
@@ -22,5 +22,7 @@ router.post("/logout", authenticate, controllers.logoutUser);
 router.patch("/avatars", authenticate, upload.single("avatar"), controllers.updateAvatar);
 
 router.patch("/", authenticate, validateBody(updateUserName), controllers.updateUserName);
+
+router.post("/subscribe", isEmptyBody, authenticate, validateBody(userEmailSchema), controllers.subscribeUser);
 
 export default router;

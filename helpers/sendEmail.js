@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
-import "dotenv/config"
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { META_EMAIL, META_PASSWORD } = process.env;
 

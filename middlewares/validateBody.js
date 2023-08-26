@@ -13,12 +13,18 @@ const validateBody = (schema) => {
           throw HttpError(400, `Missing required ${requireFieldError} field!`);
 
         case "string.min":
-          throw HttpError(400, `Missing required ${error.details[0].message}`);
+          throw HttpError(400, `${error.details[0].message}`);
 
         case "string.pattern.base":
           throw HttpError(
             400,
             `${errorContext.key} ${errorContext.value} is invalid!`
+          );
+
+        case "any.only":
+          throw HttpError(
+            400,
+            `${requireFieldError} must be one of the allowed values`
           );
 
         default:

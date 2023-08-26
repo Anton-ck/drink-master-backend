@@ -8,6 +8,9 @@ const getOwn = async (req, res) => {
     "owner",
     "email"
   );
+  if (result.length === 0) {
+    return res.json({ message: "No cocktails have been added yet" });
+  }
   res.json(result);
 };
 
@@ -19,10 +22,14 @@ const addOwn = async (req, res) => {
 
 const deleteOwn = async (req, res) => {
   const { id } = req.params;
-  const result = await Cocktail.findByIdAndRemove(id);
-  if (!result) {
-    throw HttpError(404, "Not found");
+
+  const cocktail = await Cocktail.findById(id);
+  if (!cocktail) {
+    throw HttpError(404, "The requested cocktail was not found");
   }
+
+  await Cocktail.findByIdAndRemove(id);
+
   res.json({
     message: "Cocktail deleted",
   });

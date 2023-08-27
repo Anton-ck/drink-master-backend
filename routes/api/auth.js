@@ -1,6 +1,10 @@
 import express from "express";
 
-import { registerSchema, loginSchema, updateUserName } from "../../schemas/user.js";
+import {
+  registerSchema,
+  loginSchema,
+  updateUserName,
+} from "../../schemas/user.js";
 
 import validateBody from "../../middlewares/validateBody.js";
 import isEmptyBody from "../../middlewares/isEmptyBody.js";
@@ -11,18 +15,36 @@ import controllers from "../../controllers/auth.js";
 
 const router = express.Router();
 
-router.post("/signup", isEmptyBody, validateBody(registerSchema), controllers.signUp);
+router.post(
+  "/signup",
+  isEmptyBody,
+  validateBody(registerSchema),
+  controllers.signUp
+);
 
-router.post("/signin", isEmptyBody, validateBody(loginSchema), controllers.signIn);
+router.post(
+  "/signin",
+  isEmptyBody,
+  validateBody(loginSchema),
+  controllers.signIn
+);
 
 router.get("/current", authenticate, controllers.getCurrentUser);
 
 router.post("/logout", authenticate, controllers.logoutUser);
 
-router.patch("/avatars", authenticate, upload.single("avatar"), controllers.updateAvatar);
+router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  controllers.updateAvatar
+);
 
-router.patch("/", authenticate, validateBody(updateUserName), controllers.updateUserName);
-
-// router.patch("/recipe", authenticate, upload.single("recipe"), controllers.updateAvatar);
+router.patch(
+  "/",
+  authenticate,
+  validateBody(updateUserName),
+  controllers.updateUserName
+);
 
 export default router;

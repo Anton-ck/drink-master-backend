@@ -3,6 +3,7 @@ import controllers from "../../controllers/ownRecipes.js";
 import authenticate from "../../middlewares/authenticate.js";
 import isEmptyBody from "../../middlewares/isEmptyBody.js";
 import validateBody from "../../middlewares/validateBody.js";
+import upload from "../../middlewares/upload.js";
 import { cocktailSchema } from "../../schemas/cocktails.js";
 
 const ownRouter = express.Router();
@@ -12,6 +13,7 @@ ownRouter.get("/", authenticate, controllers.getOwn);
 ownRouter.post(
   "/",
   authenticate,
+  upload.single("drinkThumb"),
   isEmptyBody,
   validateBody(cocktailSchema),
   controllers.addOwn

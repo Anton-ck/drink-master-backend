@@ -23,4 +23,6 @@ router.patch("/avatars", authenticate, upload.single("avatar"), controllers.upda
 
 router.patch("/", authenticate, validateBody(updateUserName), controllers.updateUserName);
 
+// router.patch("/recipe", authenticate, upload.single("recipe"), controllers.updateAvatar);
+
 export default router;

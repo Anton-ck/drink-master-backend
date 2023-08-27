@@ -10,38 +10,64 @@ dotenv.config();
 
 const { CLOUD_NAME, API_KEY, API_SECRET } = process.env;
 
+const avatarSize = 100;
+const recipeSize = 400;
+
 cloudinary.config({
   cloud_name: CLOUD_NAME,
   api_key: API_KEY,
   api_secret: API_SECRET,
 });
 
-const avatarImgParams = {
-  dimensions: {
-    width: 100,
-    height: 100,
-  },
+const ImgParams = {
   maxFileSize: 100000,
   acceptableFileTypes: ["jpg", "jpeg", "png"],
+};
+
+const transformationAvatar = {
+  transformation: [
+    {
+      height: avatarSize,
+      width: avatarSize,
+      crop: "fill",
+    },
+  ],
+};
+
+const transformationRecipe = {
+  transformation: [
+    {
+      height: recipeSize,
+      width: recipeSize,
+      crop: "fill",
+    },
+  ],
 };
 
 const storage = new CloudinaryStorage({
   cloudinary,
   params: (req, file) => {
-    const imgName = `${req.user._id}_user`;
+    let folder;
+    let imgName;
+    let cropImg;
+    const originalName = file.originalname.replace(/\.jpeg|\.jpg|\.png/gi, "");
 
+    if (file.fieldname === "avatar") {
+      imgName = `${req.user._id}_${originalName}`;
+      folder = "avatars";
+      cropImg = transformationAvatar;
+    }
+    if (file.fieldname === "recipe") {
+      folder = `users_recipes/${req.user._id}`;
+      imgName = `${req.user._id}_${originalName}_recipe`;
+      cropImg = transformationRecipe;
+    }
     return {
-      folder: "avatars",
-      allowed_formats: avatarImgParams.acceptableFileTypes,
+      folder: folder,
+      allowed_formats: ImgParams.acceptableFileTypes,
       public_id: imgName,
-      transformation: [
-        {
-          height: avatarImgParams.dimensions.height,
-          width: avatarImgParams.dimensions.width,
-          crop: "fill",
-        },
-      ],
-      bytes: avatarImgParams.maxFileSize,
+      transformation: [cropImg],
+      bytes: ImgParams.maxFileSize,
     };
   },
 });

@@ -8,8 +8,6 @@ const addFavorite = async (req, res) => {
   const { _id } = req.user;
   const userId = _id.toString();
   const cocktailId = req.params.recipId;
-  console.log("req.params", req.params);
-  console.log("cocktailId", cocktailId);
 
   //check cocktail on favorite
   const cocktail = await Cocktail.findById(cocktailId);
@@ -49,7 +47,7 @@ const deleteFavorite = async (req, res) => {
       new: true,
     }
   );
-  res.json({ message: "Cocktail deleted  from favorite" });
+  res.json({ message: "Cocktail deleted from favorite" });
 };
 
 //get all favorite cocktails by user
@@ -72,7 +70,9 @@ const getFavorites = async (req, res) => {
   //   };
   // });
   if (result.length === 0) {
-    return res.json({ message: "Not any favorite cocktails" });
+    return res.json({
+      message: "No favorite cocktails have been added yet",
+    });
   }
   res.json([{ quantityOfFavorites: result.length }, ...result]);
 };

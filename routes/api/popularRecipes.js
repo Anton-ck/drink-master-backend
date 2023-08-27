@@ -1,7 +1,9 @@
 import express from "express";
+import controllers from "../../controllers/popularRecipes.js";
+// import authenticate from "../../middlewares/authenticate.js";
 
-const router = express.Router();
+const popularRouter = express.Router();
 
-router.get("/");
+popularRouter.get("/", controllers.getPopular);
 
-export default router;
+export default popularRouter;

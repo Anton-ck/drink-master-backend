@@ -6,6 +6,8 @@ import User from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
+import { nanoid } from "nanoid";
+
 dotenv.config();
 
 const { SECRET_KEY } = process.env;
@@ -19,12 +21,20 @@ const signUp = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
 
+  const payload = {
+    id: nanoid(),
+  };
+
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+
   const newUser = await User.create({
     ...req.body,
+    token,
     password: hashPassword,
   });
 
   res.status(201).json({
+    token,
     user: {
       name: newUser.name,
       email: newUser.email,

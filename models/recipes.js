@@ -68,7 +68,7 @@ const cocktailSchema = new Schema(
     },
     drinkThumb: {
       type: String,
-      // required: true,
+      required: true,
     },
     ingredients: {
       type: Array,

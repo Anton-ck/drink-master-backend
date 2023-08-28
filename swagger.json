@@ -1,238 +1,700 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.1.0",
   "info": {
-    "title": "feature.proto",
-    "version": "version not set"
+    "version": "1.0.0",
+    "title": "DrinkMaster backend documentation",
+    "description": "DrinkMaster is application for finding and creating cocktail pecipes"
   },
-  "schemes": [
-    "http",
-    "https"
+
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json", "multipart/form-data"],
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://drink-master-backend.onrender.com",
+      "description": "Production server"
+    }
   ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "tags": [{ "name": "Auth", "description": "Authorization endpoints" }],
+
   "paths": {
-    "/ops/features": {
-      "get": {
-        "summary": "GET /ops/features",
-        "operationId": "ListFeatures",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/featureListFeaturesResponse"
+    "/users/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Registration object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              },
+              "examples": {
+                "signupBodyExample": {
+                  "value": {
+                    "name": "Example",
+                    "email": "example@example.com",
+                    "password": "Examplepassword1"
+                  }
+                }
+              }
             }
           }
         },
-        "tags": [
-          "Generic"
-        ]
+
+        "responses": {
+          "201": {
+            "description": "Created (signup successful response)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                },
+                "examples": {
+                  "signupSuccessfulResponseExample": {
+                    "value": {
+                      "user": {
+                        "name": "Example",
+                        "email": "example@example.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUpvalidationError"
+                },
+                "examples": {
+                  "SignUpvalidationErrorExample": {
+                    "value": {
+                      "message": "email Exampletest.com is invalid!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "409": {
+            "description": "Conflict (Provided email already exists)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUpError"
+                },
+                "examples": {
+                  "SignUpErrorExample": {
+                    "value": {
+                      "message": "Email in use"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/ops/features/{uuid}": {
-      "put": {
-        "summary": "PUT /ops/features/:uuid",
-        "operationId": "UpdateFeature",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/featureUpdateFeatureResponse"
+
+    "/users/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User login",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Login object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "examples": {
+                "signinBodyExample": {
+                  "value": {
+                    "email": "example@example.com",
+                    "password": "Examplepassword1"
+                  }
+                }
+              }
             }
           }
         },
+
+        "responses": {
+          "200": {
+            "description": "OK (signin successful response)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                },
+                "examples": {
+                  "signinSuccessfulResponseExample": {
+                    "value": {
+                      "token": "tokenexample",
+                      "user": {
+                        "email": "example@example.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUpvalidationError"
+                },
+                "examples": {
+                  "SignInvalidationErrorExample": {
+                    "value": {
+                      "message": "email Exampletest.com is invalid!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (email or password is wrong)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Email is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User logout",
         "parameters": [
           {
-            "name": "uuid",
-            "in": "path",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
             "required": true,
-            "type": "string",
-            "format": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
+            "style": "simple",
+            "explode": false,
             "schema": {
-              "$ref": "#/definitions/protobufStruct"
+              "type": "string"
             }
           }
         ],
-        "tags": [
-          "Generic"
-        ]
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "204": {
+            "description": "No Content (logout successful response)"
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/current": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user`s info",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (user was successfully found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentResponse"
+                },
+                "examples": {
+                  "GetCurrentResponseExample": {
+                    "value": {
+                      "email": "example@test.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "Changing user`s info",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Changing user`s info object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangingInfoRequest"
+              },
+              "examples": {
+                "ChangingInfoBodyExample": {
+                  "value": {
+                    "name": "Example"
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "OK (successful changing info response)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangingInfoResponse"
+                },
+                "examples": {
+                  "ChangingInfoSuccessfulResponseExample": {
+                    "value": {
+                      "name": "Example"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangingInfovalidationError"
+                },
+                "examples": {
+                  "ChangingInfovalidationErrorExample": {
+                    "value": {
+                      "message": "\"name\" is not allowed to be empty"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/avatars": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "Changing user`s avatar",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Changing user`s avatar object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangingaAvatarRequest"
+              },
+              "encoding": {
+                "img": {
+                  "contentType": "image/png, image/jpeg, image/jpg",
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "OK (successful changing avatar response)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangingAvatarResponse"
+                },
+                "examples": {
+                  "ChangingAvatarSuccessfulResponseExample": {
+                    "value": {
+                      "avatarURL": "https://res.cloudinary.com/Example"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangingAvatarValidationError"
+                },
+                "examples": {
+                  "ChangingAvatarValidationErrorExample": {
+                    "value": {
+                      "message": "Wrong extension type! Extensions should be *.png, *.jpg, *.jpeg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
-  "definitions": {
-    "featureFeature": {
-      "type": "object",
-      "properties": {
-        "app_id": {
-          "type": "string",
-          "format": "string"
-        },
-        "args": {
-          "type": "array",
-          "items": {
+
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
             "type": "string",
+            "description": "User's name, from 3 to 16 symbols",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email, should match regular expression",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password, should contain at least one number, one uppercase letter and one lowercase letter",
+            "format": "string",
+            "example": "Examplepassword1"
+          }
+        }
+      },
+
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "User's name, from 3 to 16 symbols",
+                "format": "string"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              }
+            }
+          }
+        }
+      },
+
+      "SignUpvalidationError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "SignUp validation error",
             "format": "string"
           }
-        },
-        "enabled": {
-          "type": "boolean",
-          "format": "boolean"
-        },
-        "extra_data": {
-          "$ref": "#/definitions/protobufStruct",
-          "title": "extra data can be any json data\nFor parnter(特权专区) feature it shold be\nrepeated PartnerExtra extra_data = 10"
-        },
-        "method": {
-          "$ref": "#/definitions/featureFeatureFetchMethod"
-        },
-        "requirements": {
-          "type": "array",
-          "items": {
+        }
+      },
+
+      "SignUpError": {
+        "type": "object",
+        "properties": {
+          "message": {
             "type": "string",
+            "description": "SignUp error",
             "format": "string"
           }
-        },
-        "type": {
-          "$ref": "#/definitions/featureFeatureType"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "uuid": {
-          "type": "string",
-          "format": "string"
         }
-      }
-    },
-    "featureFeatureFetchMethod": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN_METHOD",
-        "GET"
-      ],
-      "default": "UNKNOWN_METHOD"
-    },
-    "featureFeatureType": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN_FEATURE_TYPE",
-        "URL"
-      ],
-      "default": "UNKNOWN_FEATURE_TYPE"
-    },
-    "featureListFeaturesRequest": {
-      "type": "object"
-    },
-    "featureListFeaturesResponse": {
-      "type": "object",
-      "properties": {
-        "features": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/featureFeature"
+      },
+
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email, should match regular expression",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password, should contain at least one number, one uppercase letter and one lowercase letter",
+            "format": "string",
+            "example": "Examplepassword1"
+          }
+        }
+      },
+
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "User's access token",
+            "format": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              }
+            }
+          }
+        }
+      },
+
+      "AuthorizationError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Authorization error",
+            "format": "string"
+          }
+        }
+      },
+
+      "GetCurrentResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Current user`s email",
+            "format": "email"
+          }
+        }
+      },
+
+      "ChangingInfoRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name, from 3 to 16 symbols",
+            "format": "string"
+          }
+        }
+      },
+
+      "ChangingInfoResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name after successful changing",
+            "format": "string"
+          }
+        }
+      },
+
+      "ChangingInfovalidationError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Changing Info validation error",
+            "format": "string"
+          }
+        }
+      },
+
+      "ChangingaAvatarRequest": {
+        "type": "object",
+        "properties": {
+          "img": {
+            "type": "string",
+            "description": "New user`s avatar",
+            "format": "binary"
+          }
+        }
+      },
+
+      "ChangingAvatarResponse": {
+        "type": "object",
+        "properties": {
+          "avatarURL": {
+            "type": "string",
+            "description": "Link to User's avatar after successful changing",
+            "format": "string"
+          }
+        }
+      },
+
+      "ChangingAvatarValidationError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Changing Avatar validation error",
+            "format": "string"
           }
         }
       }
     },
-    "featureUpdateFeatureRequest": {
-      "type": "object",
-      "properties": {
-        "extra_data": {
-          "$ref": "#/definitions/protobufStruct"
-        },
-        "token": {
-          "type": "string",
-          "format": "string"
-        },
-        "uuid": {
-          "type": "string",
-          "format": "string"
-        }
+
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
-    },
-    "featureUpdateFeatureResponse": {
-      "type": "object",
-      "properties": {
-        "feature": {
-          "$ref": "#/definitions/featureFeature"
-        }
-      }
-    },
-    "protobufListValue": {
-      "type": "object",
-      "properties": {
-        "values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufValue"
-          },
-          "description": "Repeated field of dynamically typed values."
-        }
-      },
-      "description": "`ListValue` is a wrapper around a repeated field of values.\n\nThe JSON representation for `ListValue` is JSON array."
-    },
-    "protobufNullValue": {
-      "type": "string",
-      "enum": [
-        "NULL_VALUE"
-      ],
-      "default": "NULL_VALUE",
-      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
-    },
-    "protobufStruct": {
-      "type": "object",
-      "properties": {
-        "fields": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/protobufValue"
-          },
-          "description": "Unordered map of dynamically typed values."
-        }
-      },
-      "description": "`Struct` represents a structured data value, consisting of fields\nwhich map to dynamically typed values. In some languages, `Struct`\nmight be supported by a native representation. For example, in\nscripting languages like JS a struct is represented as an\nobject. The details of that representation are described together\nwith the proto support for the language.\n\nThe JSON representation for `Struct` is JSON object."
-    },
-    "protobufValue": {
-      "type": "object",
-      "properties": {
-        "bool_value": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": "Represents a boolean value."
-        },
-        "list_value": {
-          "$ref": "#/definitions/protobufListValue",
-          "description": "Represents a repeated `Value`."
-        },
-        "null_value": {
-          "$ref": "#/definitions/protobufNullValue",
-          "description": "Represents a null value."
-        },
-        "number_value": {
-          "type": "number",
-          "format": "double",
-          "description": "Represents a double value."
-        },
-        "string_value": {
-          "type": "string",
-          "format": "string",
-          "description": "Represents a string value."
-        },
-        "struct_value": {
-          "$ref": "#/definitions/protobufStruct",
-          "description": "Represents a structured value."
-        }
-      },
-      "description": "`Value` represents a dynamically typed value which can be either\nnull, a number, a string, a boolean, a recursive struct value, or a\nlist of values. A producer of value is expected to set one of that\nvariants, absence of any variant indicates an error.\n\nThe JSON representation for `Value` is JSON value."
     }
   }
 }

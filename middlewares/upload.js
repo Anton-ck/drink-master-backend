@@ -57,7 +57,7 @@ const storage = new CloudinaryStorage({
       folder = "avatars";
       cropImg = transformationAvatar;
     }
-    if (file.fieldname === "recipe") {
+    if (file.fieldname === "drinkThumb") {
       folder = `users_recipes/${req.user._id}`;
       imgName = `${req.user._id}_${originalName}_recipe`;
       cropImg = transformationRecipe;
@@ -77,7 +77,13 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     if (ext !== ".png" && ext !== ".jpg" && ext && ext !== ".jpeg") {
-      cb(HttpError(400, "Wrong extension type! Extensions should be *.png, *.jpg, *.jpeg"), false);
+      cb(
+        HttpError(
+          400,
+          "Wrong extension type! Extensions should be *.png, *.jpg, *.jpeg"
+        ),
+        false
+      );
     } else {
       cb(null, true);
     }

@@ -3,6 +3,8 @@ import logger from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
+import formData from "express-form-data";
+import os from "os";
 
 import swaggerDocument from "./swagger.json" assert { type: "json" };
 
@@ -22,10 +24,18 @@ const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
+const options = {
+  uploadDir: os.tmpdir(),
+  autoClean: true,
+};
+
+app.use(formData.parse(options));
+app.use(formData.format());
+app.use(formData.union());
+
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
 
 app.use("/users", authRouter);
 app.use("/subscribe", subscribeRouter);

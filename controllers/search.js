@@ -5,7 +5,7 @@ import Cocktail  from "../models/recipes.js";
 
 
 const getSearchRecipes = async (req, res) => {
-    const { search, category, ingredient, page = 1, limit = 10 } = req.query;
+    const { search, category, ingredients, page = 1, limit = 10 } = req.query;
 
     const query = {};
 
@@ -15,9 +15,9 @@ const getSearchRecipes = async (req, res) => {
     if (category) {
         query.category = category;
     }
-    if (ingredient) {
+    if (ingredients) {
         query.ingredients = {
-            $elemMatch: { title: ingredient },
+            $elemMatch: { title: ingredients },
         };
     }
 

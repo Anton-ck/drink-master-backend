@@ -37,4 +37,4 @@ const getSearchRecipes = async (req, res) => {
     res.json({ totalHits, drinks });
 };
 
-export default ctrlWrapper(getSearchRecipes);
+export default {getSearchRecipes: ctrlWrapper(getSearchRecipes)};

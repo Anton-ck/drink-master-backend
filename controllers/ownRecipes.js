@@ -4,10 +4,14 @@ import Cocktail from "../models/recipes.js";
 
 const getOwn = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await Cocktail.find({ owner }, "-updatedAt").populate(
-    "owner",
-    "email"
-  );
+  const { page = 1, limit = 8, ...query } = req.query;
+  const skip = (page - 1) * limit;
+
+  const result = await Cocktail.find({ owner, ...query }, "-updatedAt", {
+    skip,
+    limit,
+  }).populate("owner", "email");
+
   if (result.length === 0) {
     return res.json({ message: "No cocktails have been added yet" });
   }

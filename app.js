@@ -37,6 +37,8 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
+// app.use(express.static("public"));
+
 app.use("/users", authRouter);
 app.use("/subscribe", subscribeRouter);
 app.use("/recipes", recipesRouter);

@@ -20,7 +20,14 @@
   ],
   "tags": [
     { "name": "Auth", "description": "Authorization endpoints" },
-    { "name": "Own Recipes", "description": "Endpoints for user`s own recipes" }
+    {
+      "name": "Own Recipes",
+      "description": "Endpoints for user`s own recipes"
+    },
+    {
+      "name": "Favorite Recipes",
+      "description": "Endpoints for user`s favorite recipes"
+    }
   ],
 
   "paths": {
@@ -686,6 +693,342 @@
           }
         }
       }
+    },
+
+    "/own/:id": {
+      "delete": {
+        "tags": ["Own Recipes"],
+        "summary": "Delete one user`s recipes",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Recipe Id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (Recipe was successfully deleted)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteOwnRecipesResponse"
+                },
+                "examples": {
+                  "DeleteOwnRecipesResponseExample": {
+                    "value": {
+                      "message": "Cocktail deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "404": {
+            "description": "Not Found (There is no such a cocktail in the data-base)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NotFoundErrorExample": {
+                    "value": {
+                      "message": "The requested cocktail was not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/favorite": {
+      "get": {
+        "tags": ["Favorite Recipes"],
+        "summary": "Get current user`s favorite recipes",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (Recipes were successfully found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOwnRecipesResponse"
+                },
+                "examples": {
+                  "GetFavoriteRecipesResponseExample": {
+                    "value": [
+                      {
+                        "_id": "example_cocktail_id",
+                        "drink": "name of cocktail",
+                        "category": "Category of cocktail",
+                        "alcoholic": "Alcoholic",
+                        "glass": "Cocktail glass",
+                        "instructions": "Instruction example",
+                        "drinkThumb": "https://res.cloudinary.com/",
+                        "ingredients": ["ingredient1", "ingredient2"],
+                        "usersFavorite": ["Name1", "Name2"],
+                        "owner": {
+                          "_id": "example_user`s_id",
+                          "email": "example@example.com"
+                        },
+                        "createdAt": "2023-08-27T19:33:05.467Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/favorite/:recipId": {
+      "patch": {
+        "tags": ["Favorite Recipes"],
+        "summary": "Add one recipe to user`s favorite",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipId",
+            "in": "path",
+            "description": "Recipe Id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (Recipe was successfully added to favorite)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddToFavoriteRecipesResponse"
+                },
+                "examples": {
+                  "AddToFavoriteRecipesResponseExample": {
+                    "value": {
+                      "message": "Cocktail added to favorite"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "409": {
+            "description": "Conflict (Cocktail has been added to favorites earlier)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AddToFavoriteErrorExample": {
+                    "value": {
+                      "message": "Favorite cocktail added early"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Favorite Recipes"],
+        "summary": "Delete one user`s recipes",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipId",
+            "in": "path",
+            "description": "Recipe Id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (Recipe was successfully deleted)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteOwnRecipesResponse"
+                },
+                "examples": {
+                  "DeleteFromFavoritesRecipesResponseExample": {
+                    "value": {
+                      "message": "Cocktail deleted from favorite"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "409": {
+            "description": "Conflict (Cocktail has been deleted from favorites earlier)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "DeleteFromFavoritesErrorExample": {
+                    "value": {
+                      "message": "Favorite cocktail deleted early"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
 
@@ -776,7 +1119,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Authorization or validation error"
+            "description": "Authorization, validation or another error"
           }
         }
       },
@@ -1103,6 +1446,26 @@
             "type": "string",
             "description": "Date of user`s update in the data-base",
             "format": "date-time"
+          }
+        }
+      },
+
+      "DeleteOwnRecipesResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message about successful recipe deleting"
+          }
+        }
+      },
+
+      "AddToFavoriteRecipesResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message about successful recipe adding to favorite"
           }
         }
       }

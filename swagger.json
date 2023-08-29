@@ -79,7 +79,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SignUpvalidationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "SignUpvalidationErrorExample": {
@@ -97,7 +97,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SignUpError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "SignUpErrorExample": {
@@ -166,7 +166,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SignUpvalidationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "SignInvalidationErrorExample": {
@@ -183,7 +183,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "AuthorizationErrorExample": {
@@ -228,7 +228,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "AuthorizationErrorExample": {
@@ -269,7 +269,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCurrentResponse"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "GetCurrentResponseExample": {
@@ -287,7 +287,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "AuthorizationErrorExample": {
@@ -365,7 +365,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChangingInfovalidationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "ChangingInfovalidationErrorExample": {
@@ -383,7 +383,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "AuthorizationErrorExample": {
@@ -460,7 +460,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChangingAvatarValidationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "ChangingAvatarValidationErrorExample": {
@@ -478,7 +478,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "AuthorizationErrorExample": {
@@ -552,7 +552,127 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Own Recipes"],
+        "summary": "Creating a new cocktail recipe",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Cocktail Creating object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatingCocktailRequest"
+              },
+              "examples": {
+                "CocktailCreatingBodyExample": {
+                  "value": {
+                    "_id": "example_cocktail_id",
+                    "drink": "name of cocktail",
+                    "category": "Category of cocktail",
+                    "alcoholic": "Alcoholic",
+                    "glass": "Cocktail glass",
+                    "instructions": "Instruction example",
+                    "drinkThumb": "https://res.cloudinary.com/",
+                    "ingredients": ["ingredient1", "ingredient2"],
+                    "usersFavorite": ["Name1", "Name2"],
+                    "owner": {
+                      "_id": "example_user`s_id",
+                      "email": "example@example.com"
+                    },
+                    "createdAt": "2023-08-27T19:33:05.467Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "201": {
+            "description": "Created (Cocktail has been successfully created)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CocktailRecipe"
+                },
+                "examples": {
+                  "CreatingSuccessfulResponseExample": {
+                    "value": {
+                      "_id": "example_cocktail_id",
+                      "drink": "name of cocktail",
+                      "category": "Category of cocktail",
+                      "alcoholic": "Alcoholic",
+                      "glass": "Cocktail glass",
+                      "instructions": "Instruction example",
+                      "drinkThumb": "https://res.cloudinary.com/",
+                      "ingredients": ["ingredient1", "ingredient2"],
+                      "usersFavorite": ["Name1", "Name2"],
+                      "owner": {
+                        "_id": "example_user`s_id",
+                        "email": "example@example.com"
+                      },
+                      "createdAt": "2023-08-27T19:33:05.467Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "CreatingCocktailErrorExample": {
+                    "value": {
+                      "message": "\"examplefield\" is not allowed to be empty"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "AuthorizationErrorExample": {
@@ -577,8 +697,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "User's name, from 3 to 16 symbols",
-            "format": "string"
+            "description": "User's name, from 3 to 16 symbols"
           },
           "email": {
             "type": "string",
@@ -587,8 +706,8 @@
           },
           "password": {
             "type": "string",
-            "description": "User's password, should contain at least one number, one uppercase letter and one lowercase letter",
-            "format": "string",
+            "description": "User's password, at least 6 symbols, should contain at least one number, one uppercase letter and one lowercase letter",
+            "format": "password",
             "example": "Examplepassword1"
           }
         }
@@ -602,8 +721,7 @@
             "properties": {
               "name": {
                 "type": "string",
-                "description": "User's name, from 3 to 16 symbols",
-                "format": "string"
+                "description": "User's name, from 3 to 16 symbols"
               },
               "email": {
                 "type": "string",
@@ -611,28 +729,6 @@
                 "format": "email"
               }
             }
-          }
-        }
-      },
-
-      "SignUpvalidationError": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "SignUp validation error",
-            "format": "string"
-          }
-        }
-      },
-
-      "SignUpError": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "SignUp error",
-            "format": "string"
           }
         }
       },
@@ -649,7 +745,7 @@
           "password": {
             "type": "string",
             "description": "User's password, should contain at least one number, one uppercase letter and one lowercase letter",
-            "format": "string",
+            "format": "password",
             "example": "Examplepassword1"
           }
         }
@@ -660,8 +756,7 @@
         "properties": {
           "token": {
             "type": "string",
-            "description": "User's access token",
-            "format": "string"
+            "description": "User's access token"
           },
           "user": {
             "type": "object",
@@ -676,13 +771,12 @@
         }
       },
 
-      "AuthorizationError": {
+      "Error": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string",
-            "description": "Authorization error",
-            "format": "string"
+            "description": "Authorization or validation error"
           }
         }
       },
@@ -704,8 +798,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "User's name, from 3 to 16 symbols",
-            "format": "string"
+            "description": "User's name, from 3 to 16 symbols"
           }
         }
       },
@@ -715,19 +808,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "User's name after successful changing",
-            "format": "string"
-          }
-        }
-      },
-
-      "ChangingInfovalidationError": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "Changing Info validation error",
-            "format": "string"
+            "description": "User's name after successful changing"
           }
         }
       },
@@ -748,19 +829,7 @@
         "properties": {
           "avatarURL": {
             "type": "string",
-            "description": "Link to User's avatar after successful changing",
-            "format": "string"
-          }
-        }
-      },
-
-      "ChangingAvatarValidationError": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "Changing Avatar validation error",
-            "format": "string"
+            "description": "Link to User's avatar after successful changing"
           }
         }
       },
@@ -793,93 +862,76 @@
         "properties": {
           "drink": {
             "type": "string",
-            "description": "Cocktail name, should contain at least 2 symbols",
-            "format": "string"
+            "description": "Cocktail name, should contain at least 2 symbols"
           },
           "drinkAlternate": {
             "type": "string",
-            "description": "I have any clue what it is :)",
-            "format": "string"
+            "description": "I have any clue what it is :)"
           },
           "tags": {
             "type": "string",
-            "description": "Some tags which related to cocktail",
-            "format": "string"
+            "description": "Some tags which related to cocktail"
           },
           "video": {
             "type": "string",
-            "description": "Link to the cocktail preparation video",
-            "format": "string"
+            "description": "Link to the cocktail preparation video"
           },
           "description": {
             "type": "string",
-            "description": "Description of the cocktail",
-            "format": "string"
+            "description": "Description of the cocktail"
           },
           "category": {
             "type": "string",
-            "description": "Category of the cocktail, should be chosen from suggested list of categories",
-            "format": "string"
+            "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "IBA": {
             "type": "string",
-            "description": "I have any clue what it is also :)",
-            "format": "string"
+            "description": "I have any clue what it is also :)"
           },
           "alcoholic": {
             "type": "string",
-            "description": "Type of the cocktail, should be chosen from suggested values: alcoholic/non alcoholic",
-            "format": "string"
+            "description": "Type of the cocktail, should be chosen from suggested values: alcoholic/non alcoholic"
           },
           "glass": {
             "type": "string",
-            "description": "Category of the cocktail, should be chosen from suggested list of categories",
-            "format": "string"
+            "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "instructions": {
             "type": "string",
-            "description": "Instructions to the preparation of the cocktail",
-            "format": "string"
+            "description": "Instructions to the preparation of the cocktail"
           },
           "instructionsES": {
             "type": "string",
-            "description": "Instructions in Spanish",
-            "format": "string"
+            "description": "Instructions in Spanish"
           },
           "instructionsDE": {
             "type": "string",
-            "description": "Instructions in German",
-            "format": "string"
+            "description": "Instructions in German"
           },
           "instructionsFR": {
             "type": "string",
-            "description": "Instructions in French",
-            "format": "string"
+            "description": "Instructions in French"
           },
           "instructionsIT": {
             "type": "string",
-            "description": "Instructions in Italian",
-            "format": "string"
+            "description": "Instructions in Italian"
           },
           "instructionsRU": {
             "type": "string",
-            "description": "Should be replaced by Ukranian",
-            "format": "string"
+            "description": "Should be replaced by Ukranian"
           },
           "instructionsPL": {
             "type": "string",
-            "description": "Instructions in Polish",
-            "format": "string"
+            "description": "Instructions in Polish"
           },
           "instructionsUK": {
             "type": "string",
-            "description": "Instructions in English",
-            "format": "string"
+            "description": "Instructions in English"
           },
           "drinkThumb": {
             "type": "string",
             "description": "Link to the cocktail image",
-            "format": "string"
+            "format": "binary"
           },
           "ingredients": {
             "type": "array",
@@ -911,13 +963,12 @@
             "properties": {
               "_id": {
                 "type": "string",
-                "description": "User's id",
-                "format": "string"
+                "description": "User's id"
               },
               "email": {
                 "type": "string",
                 "description": "User's email",
-                "format": "string"
+                "format": "email"
               }
             },
             "format": "object"
@@ -925,14 +976,136 @@
           "createdAt": {
             "type": "string",
             "description": "Date of cocktail creation",
-            "format": "string"
+            "format": "date-time"
           }
         }
       },
 
-      "Ingredient": {},
+      "CreatingCocktailRequest": {
+        "type": "object",
+        "required": [
+          "drink",
+          "category",
+          "alcoholic",
+          "glass",
+          "instructions",
+          "drinkThumb",
+          "ingredients"
+        ],
+        "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Cocktail name, should contain at least 2 symbols"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the cocktail"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the cocktail, should be chosen from suggested list of categories"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "Type of the cocktail, should be chosen from suggested values: alcoholic/non alcoholic"
+          },
+          "glass": {
+            "type": "string",
+            "description": "Category of the cocktail, should be chosen from suggested list of categories"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Instructions to the preparation of the cocktail"
+          },
+          "drinkThumb": {
+            "type": "string",
+            "description": "Link to the cocktail image",
+            "format": "binary"
+          },
+          "ingredients": {
+            "type": "array",
+            "description": "Array of cocktail ingredients",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Ingredient"
+                }
+              ]
+            },
+            "format": "array"
+          }
+        }
+      },
 
-      "User": {}
+      "Ingredient": {
+        "type": "object",
+        "required": ["title", "ingredientThumb", "thumb-medium", "thumb-small"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Ingredient name"
+          },
+          "ingredientThumb": {
+            "type": "string",
+            "description": "Link to the large ingredient image"
+          },
+          "thumb-medium": {
+            "type": "string",
+            "description": "Link to the medium ingredient image"
+          },
+          "thumb-small": {
+            "type": "string",
+            "description": "Link to the small ingredient image"
+          }
+        }
+      },
+
+      "User": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name, from 3 to 16 symbols"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email, should match regular expression",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password, at least 6 symbols, should contain at least one number, one uppercase letter and one lowercase letter",
+            "format": "password"
+          },
+          "verificationToken": {
+            "type": "string",
+            "description": "User`s access token"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Link to the user`s avatar"
+          },
+          "subscription": {
+            "type": "boolean",
+            "description": "Determines if the user has a subscription or not"
+          },
+          "verify": {
+            "type": "boolean",
+            "description": "Determines if the user has verified their email or not"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date of user`s creation in the data-base",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date of user`s update in the data-base",
+            "format": "date-time"
+          }
+        }
+      }
     },
 
     "securitySchemes": {

@@ -53,12 +53,19 @@ const deleteFavorite = async (req, res) => {
 //get all favorite cocktails by user
 const getFavorites = async (req, res) => {
   const { _id } = req.user;
+  const { page = 1, limit = 8, ...query } = req.query;
+  const parsedLimit = parseInt(limit);
+  console.log("page", page);
+
   const userId = _id.toString();
 
   const result = await Cocktail.find(
     { usersFavorite: userId },
     "-usersFavorite "
-  );
+  )
+    .skip((page - 1) * parsedLimit) // Skip documents based on the page and limit
+    .limit(parsedLimit); // Limit the number of documents per page
+
   //return array of need fields
   // const array = result.map((cocktail) => {
   //   return {
@@ -74,7 +81,7 @@ const getFavorites = async (req, res) => {
       message: "No favorite cocktails have been added yet",
     });
   }
-  res.json([{ quantityOfFavorites: result.length }, ...result]);
+  res.json(result);
 };
 
 export default {

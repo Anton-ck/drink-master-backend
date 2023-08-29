@@ -18,7 +18,10 @@
       "description": "Production server"
     }
   ],
-  "tags": [{ "name": "Auth", "description": "Authorization endpoints" }],
+  "tags": [
+    { "name": "Auth", "description": "Authorization endpoints" },
+    { "name": "Own Recipes", "description": "Endpoints for user`s own recipes" }
+  ],
 
   "paths": {
     "/users/signup": {
@@ -489,6 +492,80 @@
           }
         }
       }
+    },
+
+    "/own": {
+      "get": {
+        "tags": ["Own Recipes"],
+        "summary": "Get current user`s saved recipes",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (Recipes were successfully found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOwnRecipesResponse"
+                },
+                "examples": {
+                  "GetOwnRecipesResponseExample": {
+                    "value": [
+                      {
+                        "_id": "example_cocktail_id",
+                        "drink": "name of cocktail",
+                        "category": "Category of cocktail",
+                        "alcoholic": "Alcoholic",
+                        "glass": "Cocktail glass",
+                        "instructions": "Instruction example",
+                        "drinkThumb": "https://res.cloudinary.com/",
+                        "ingredients": ["ingredient1", "ingredient2"],
+                        "usersFavorite": ["Name1", "Name2"],
+                        "owner": {
+                          "_id": "example_user`s_id",
+                          "email": "example@example.com"
+                        },
+                        "createdAt": "2023-08-27T19:33:05.467Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
 
@@ -686,7 +763,176 @@
             "format": "string"
           }
         }
-      }
+      },
+
+      "GetOwnRecipesResponse": {
+        "type": "array",
+        "properties": {
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CocktailRecipe"
+              }
+            ]
+          }
+        }
+      },
+
+      "CocktailRecipe": {
+        "type": "object",
+        "required": [
+          "drink",
+          "category",
+          "alcoholic",
+          "glass",
+          "instructions",
+          "drinkThumb",
+          "ingredients",
+          "owner"
+        ],
+        "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Cocktail name, should contain at least 2 symbols",
+            "format": "string"
+          },
+          "drinkAlternate": {
+            "type": "string",
+            "description": "I have any clue what it is :)",
+            "format": "string"
+          },
+          "tags": {
+            "type": "string",
+            "description": "Some tags which related to cocktail",
+            "format": "string"
+          },
+          "video": {
+            "type": "string",
+            "description": "Link to the cocktail preparation video",
+            "format": "string"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the cocktail",
+            "format": "string"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the cocktail, should be chosen from suggested list of categories",
+            "format": "string"
+          },
+          "IBA": {
+            "type": "string",
+            "description": "I have any clue what it is also :)",
+            "format": "string"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "Type of the cocktail, should be chosen from suggested values: alcoholic/non alcoholic",
+            "format": "string"
+          },
+          "glass": {
+            "type": "string",
+            "description": "Category of the cocktail, should be chosen from suggested list of categories",
+            "format": "string"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Instructions to the preparation of the cocktail",
+            "format": "string"
+          },
+          "instructionsES": {
+            "type": "string",
+            "description": "Instructions in Spanish",
+            "format": "string"
+          },
+          "instructionsDE": {
+            "type": "string",
+            "description": "Instructions in German",
+            "format": "string"
+          },
+          "instructionsFR": {
+            "type": "string",
+            "description": "Instructions in French",
+            "format": "string"
+          },
+          "instructionsIT": {
+            "type": "string",
+            "description": "Instructions in Italian",
+            "format": "string"
+          },
+          "instructionsRU": {
+            "type": "string",
+            "description": "Should be replaced by Ukranian",
+            "format": "string"
+          },
+          "instructionsPL": {
+            "type": "string",
+            "description": "Instructions in Polish",
+            "format": "string"
+          },
+          "instructionsUK": {
+            "type": "string",
+            "description": "Instructions in English",
+            "format": "string"
+          },
+          "drinkThumb": {
+            "type": "string",
+            "description": "Link to the cocktail image",
+            "format": "string"
+          },
+          "ingredients": {
+            "type": "array",
+            "description": "Array of cocktail ingredients",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Ingredient"
+                }
+              ]
+            },
+            "format": "array"
+          },
+          "usersFavorite": {
+            "type": "array",
+            "description": "Array of users who added cocktail to favorites",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/User"
+                }
+              ]
+            },
+            "format": "array"
+          },
+          "owner": {
+            "type": "object",
+            "description": "User who added the cocktail",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User's id",
+                "format": "string"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "string"
+              }
+            },
+            "format": "object"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date of cocktail creation",
+            "format": "string"
+          }
+        }
+      },
+
+      "Ingredient": {},
+
+      "User": {}
     },
 
     "securitySchemes": {

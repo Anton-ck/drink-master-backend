@@ -27,6 +27,14 @@
     {
       "name": "Favorite Recipes",
       "description": "Endpoints for user`s favorite recipes"
+    },
+    {
+      "name": "Glasses",
+      "description": "Endpoints for glasses which user can use in recipes"
+    },
+    {
+      "name": "Subscription",
+      "description": "Endpoints for user`s subscription"
     }
   ],
 
@@ -276,12 +284,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/GetCurrentResponse"
                 },
                 "examples": {
                   "GetCurrentResponseExample": {
                     "value": {
-                      "email": "example@test.com"
+                      "name": "Example",
+                      "email": "example@example.com",
+                      "avatarURL": "https://res.cloudinary.com/Example"
                     }
                   }
                 }
@@ -1029,6 +1039,151 @@
           }
         }
       }
+    },
+
+    "/glasses": {
+      "get": {
+        "tags": ["Glasses"],
+        "summary": "Get collection of glasses",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (glasses were successfully found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetGlassesResponse"
+                },
+                "examples": {
+                  "GetGlassesResponseExample": {
+                    "value": [
+                      "Highball glass",
+                      "Cocktail glass",
+                      "Old-fashioned glass"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+
+          "500": {
+            "description": "Internal Server Error (array of glasses is empty)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "GetGlassesErrorExample": {
+                    "value": {
+                      "message": "No glasses list"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/subscribe": {
+      "post": {
+        "tags": ["Subscription"],
+        "summary": "User subscription",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Subscription object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionRequest"
+              },
+              "examples": {
+                "subscriptionBodyExample": {
+                  "value": {
+                    "email": "example@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "OK (Successful Subscription)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionResponse"
+                },
+                "examples": {
+                  "subscriptionSuccessfulResponseExample": {
+                    "value": {
+                      "message": "subscription email sent"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "SubscriptionErrorExample": {
+                    "value": {
+                      "message": "Missing fields"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "409": {
+            "description": "Conflict (Provided email already in use for subscription)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "SubscriptionErrorExample": {
+                    "value": {
+                      "message": "This email is already in use in subscription"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
 
@@ -1127,10 +1282,18 @@
       "GetCurrentResponse": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name, from 3 to 16 symbols"
+          },
           "email": {
             "type": "string",
             "description": "Current user`s email",
             "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Link to the user`s avatar"
           }
         }
       },
@@ -1466,6 +1629,46 @@
           "message": {
             "type": "string",
             "description": "Message about successful recipe adding to favorite"
+          }
+        }
+      },
+
+      "GetGlassesResponse": {
+        "type": "array",
+        "description": "Array of glasses which user can use in recipes",
+        "items": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/Glass"
+            }
+          ]
+        },
+        "format": "array"
+      },
+
+      "Glass": {
+        "type": "string",
+        "description": "Type of glass which user can use in recipes"
+      },
+
+      "SubscriptionRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email, should match regular expression",
+            "format": "email"
+          }
+        }
+      },
+
+      "SubscriptionResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message about successful subscription"
           }
         }
       }

@@ -27,11 +27,12 @@ const userSchema = new Schema(
     },
     avatarURL: {
       type: String,
+      default: null,
     },
     subscription: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   { versionKey: false, timestamps: true }
 );

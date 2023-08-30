@@ -21,17 +21,18 @@ const signUp = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
 
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+  });
+
   const payload = {
-    id: nanoid(),
+    id: newUser._id,
   };
 
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
 
-  const newUser = await User.create({
-    ...req.body,
-    token,
-    password: hashPassword,
-  });
+  await User.findByIdAndUpdate(newUser._id, { token });
 
   res.status(201).json({
     token,
@@ -50,10 +51,6 @@ const signIn = async (req, res) => {
   if (!user) {
     throw HttpError(401, "Email is wrong");
   }
-
-  // if (!user.verify) {
-  //   throw HttpError(401, "Verification invalid");
-  // }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
 
@@ -74,10 +71,12 @@ const signIn = async (req, res) => {
 };
 
 const getCurrentUser = async (req, res) => {
-  const { email } = req.user;
+  const { name, email, avatarURL } = req.user;
 
   res.json({
+    name,
     email,
+    avatarURL,
   });
 };
 

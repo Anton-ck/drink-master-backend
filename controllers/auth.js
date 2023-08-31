@@ -6,8 +6,6 @@ import User from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
-import { nanoid } from "nanoid";
-
 dotenv.config();
 
 const { SECRET_KEY } = process.env;
@@ -66,7 +64,7 @@ const signIn = async (req, res) => {
   await User.findByIdAndUpdate(user._id, { token });
   res.json({
     token,
-    user: { email: user.email },
+    user: { name: user.name, email: user.email, avatarURL: user.avatarURL },
   });
 };
 

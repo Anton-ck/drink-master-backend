@@ -23,7 +23,8 @@ const addFavorite = async (req, res) => {
     }
   );
 
-  res.json({ message: "Cocktail added to favorite" });
+  delete cocktail._doc.usersFavorite;
+  res.json({ message: "Cocktail added to favorite", ...cocktail._doc });
 };
 
 //delete cocktail from favorite
@@ -43,11 +44,13 @@ const deleteFavorite = async (req, res) => {
   await Cocktail.findByIdAndUpdate(
     cocktailId,
     { $pull: { usersFavorite: userId.toString() } },
+
     {
       new: true,
     }
   );
-  res.json({ message: "Cocktail deleted from favorite" });
+  delete cocktail._doc.usersFavorite;
+  res.json({ message: "Cocktail deleted from favorite", ...cocktail._doc });
 };
 
 //get all favorite cocktails by user

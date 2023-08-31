@@ -65,9 +65,9 @@ const getFavorites = async (req, res) => {
   const result = await Cocktail.find(
     { usersFavorite: userId },
     "-usersFavorite "
-  )
-    .skip((page - 1) * parsedLimit) // Skip documents based on the page and limit
-    .limit(parsedLimit); // Limit the number of documents per page
+  );
+  // .skip((page - 1) * parsedLimit) // Skip documents based on the page and limit
+  // .limit(parsedLimit); // Limit the number of documents per page
 
   //return array of need fields
   // const array = result.map((cocktail) => {

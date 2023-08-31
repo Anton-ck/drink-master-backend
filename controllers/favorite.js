@@ -22,9 +22,13 @@ const addFavorite = async (req, res) => {
       new: true,
     }
   );
+  const totalHits = await Cocktail.countDocuments({ usersFavorite: userId });
 
   delete cocktail._doc.usersFavorite;
-  res.json({ message: "Cocktail added to favorite", ...cocktail._doc });
+  res.json({
+    totalHits,
+    ...cocktail._doc,
+  });
 };
 
 //delete cocktail from favorite
@@ -49,8 +53,9 @@ const deleteFavorite = async (req, res) => {
       new: true,
     }
   );
+  const totalHits = await Cocktail.countDocuments({ usersFavorite: userId });
   delete cocktail._doc.usersFavorite;
-  res.json({ message: "Cocktail deleted from favorite", ...cocktail._doc });
+  res.json({ totalHits, ...cocktail._doc });
 };
 
 //get all favorite cocktails by user
@@ -58,33 +63,25 @@ const getFavorites = async (req, res) => {
   const { _id } = req.user;
   const { page = 1, limit = 8, ...query } = req.query;
   const parsedLimit = parseInt(limit);
-  console.log("page", page);
+  const parsedPage = parseInt(page);
+  const skip = (parsedPage - 1) * parsedLimit;
 
   const userId = _id.toString();
+  const totalHits = await Cocktail.countDocuments({ usersFavorite: userId });
 
-  const result = await Cocktail.find(
+  const drinks = await Cocktail.find(
     { usersFavorite: userId },
     "-usersFavorite "
-  );
-  // .skip((page - 1) * parsedLimit) // Skip documents based on the page and limit
-  // .limit(parsedLimit); // Limit the number of documents per page
+  )
+    .skip(skip) // Skip documents based on the page and limit
+    .limit(parsedLimit); // Limit the number of documents per page
 
-  //return array of need fields
-  // const array = result.map((cocktail) => {
-  //   return {
-  //     id: cocktail._id,
-  //     drink: cocktail.drink,
-  //     alcoholic: cocktail.alcoholic,
-  //     glass: cocktail.glass,
-  //     instructions: cocktail.instructions,
-  //   };
-  // });
-  if (result.length === 0) {
+  if (drinks.length === 0) {
     return res.json({
       message: "No favorite cocktails have been added yet",
     });
   }
-  res.json(result);
+  res.json({ totalHits, drinks });
 };
 
 export default {

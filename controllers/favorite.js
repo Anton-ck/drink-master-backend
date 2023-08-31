@@ -68,7 +68,6 @@ const getFavorites = async (req, res) => {
 
   const userId = _id.toString();
   const totalHits = await Cocktail.countDocuments({ usersFavorite: userId });
-  console.log("totalHits", totalHits);
 
   const drinks = await Cocktail.find(
     { usersFavorite: userId },

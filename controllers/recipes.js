@@ -39,24 +39,18 @@ const getCocktailParam = async (req, res) => {
 };
 
 const getCocktailsForMain = async (req, res) => {
-  const data = await fs.readFile(categoriesPath);
-  const categories = JSON.parse(data);
-  const { limit = 3, ...query } = req.query;
-  if (!categories) {
-    throw HttpError(404, `Cocktails not found`);
-  }
-  const randomCategories = categories
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 4);
-  console.log(randomCategories);
+  const categories = ["Ordinary Drink", "Cocktail", "Shake", "Other/Unknown"];
 
   const result = [];
 
-  for (const category of randomCategories) {
+  for (const category of categories) {
     const cocktailsInCategory = await Cocktail.find({
       category,
-    }).limit(limit);
+    }).limit(3);
     result.push(...cocktailsInCategory);
+  }
+  if (!result) {
+    throw HttpError(404, "Sorry, no drinks were found");
   }
   res.json(result);
 };

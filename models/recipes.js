@@ -33,7 +33,7 @@ const cocktailSchema = new Schema(
     },
     alcoholic: {
       type: String,
-      required: [true, "Type of drink is required"],
+      // required: [true, "Type of drink is required"],
     },
     glass: {
       type: String,

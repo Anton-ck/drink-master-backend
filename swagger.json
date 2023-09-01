@@ -39,6 +39,14 @@
     {
       "name": "All Recipes",
       "description": "Endpoints for all recipes"
+    },
+    {
+      "name": "Popular Recipes",
+      "description": "Endpoints for popular recipes"
+    },
+    {
+      "name": "Ingredients",
+      "description": "Endpoints for ingredients which user can use in recipes"
     }
   ],
 
@@ -1050,7 +1058,6 @@
         "tags": ["Glasses"],
         "summary": "Get collection of glasses",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
 
         "responses": {
           "200": {
@@ -1352,7 +1359,7 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
-                  "GetCategoriesErrorExample": {
+                  "GetCocktailsErrorExample": {
                     "value": {
                       "message": "Sorry, no drinks were found"
                     }
@@ -1576,6 +1583,109 @@
                     "value": {
                       "message": "Cocktail in category Ordinary Drink not found"
                     }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/popular-recipe": {
+      "get": {
+        "tags": ["Popular Recipes"],
+        "summary": "Get collection of popular cocktails",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Current user`s token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "OK (Cocktails were successfully found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPopularCocktailsResponse"
+                },
+                "examples": {
+                  "GetPopularCocktailsResponseExample": {
+                    "value": [
+                      {
+                        "_id": "639b6de9ff77d221f190c502",
+                        "drink": "Yellow Bird",
+                        "instructions": "Shake and strain into a chilled cocktail glass",
+                        "favoriteCount": 4
+                      }
+                    ]
+                  },
+                  "NoPopularCocktailsResponseExample": {
+                    "value": {
+                      "message": "No popular cocktails yet"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "description": "Unauthorized (user isn`t authorized)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/ingredients/list": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "Get collection of ingredients",
+        "parameters": [],
+
+        "responses": {
+          "200": {
+            "description": "OK (Ingredients were successfully found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetIngredientsResponse"
+                },
+                "examples": {
+                  "GetIngredientsResponseExample": {
+                    "value": [
+                      {
+                        "_id": "639b6de9ff77d221f190c51e",
+                        "title": "Strawberry schnapps",
+                        "ingredientThumb": "http://res.cloudinary.com",
+                        "thumb-medium": "http://res.cloudinary.com",
+                        "thumb-small": "http://res.cloudinary.com"
+                      }
+                    ]
                   }
                 }
               }
@@ -2098,6 +2208,54 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/CocktailRecipe"
+              }
+            ]
+          }
+        },
+        "format": "array"
+      },
+
+      "GetPopularCocktailsResponse": {
+        "type": "array",
+        "properties": {
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PopularCocktail"
+              }
+            ]
+          }
+        },
+        "format": "array"
+      },
+
+      "PopularCocktail": {
+        "type": "object",
+        "required": ["drink", "instructions", "favouriteCount"],
+        "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Cocktail name, should contain at least 2 symbols"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Instructions to the preparation of the cocktail"
+          },
+          "favouriteCount": {
+            "type": "integer",
+            "description": "Number of user`s who added cocktail to populars",
+            "format": "int64"
+          }
+        }
+      },
+
+      "GetIngredientsResponse": {
+        "type": "array",
+        "properties": {
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Ingredient"
               }
             ]
           }

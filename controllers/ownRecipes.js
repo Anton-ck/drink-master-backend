@@ -13,12 +13,16 @@ const getOwn = async (req, res) => {
   }).populate("owner", "email");
 
   if (result.length === 0) {
-    return res.json({ message: "No cocktails have been added yet" });
+    return res.json({
+      message: "No cocktails have been added yet",
+      cocktails: [],
+    });
   }
   res.json(result);
 };
 
 const addOwn = async (req, res) => {
+  // console.log(req);
   const { _id: owner } = req.user;
   const fileUrl = req.file?.path;
   const result = await Cocktail.create({

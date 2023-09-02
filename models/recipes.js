@@ -42,7 +42,7 @@ const cocktailSchema = new Schema(
     },
     instructions: {
       type: String,
-      minlength: 30,
+      // minlength: 3,
       required: [true, "Instructions is required"],
     },
     instructionsES: {
@@ -68,7 +68,7 @@ const cocktailSchema = new Schema(
     },
     drinkThumb: {
       type: String,
-      required: true,
+      // required: true,
     },
     ingredients: {
       type: Array,

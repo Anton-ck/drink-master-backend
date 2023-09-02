@@ -24,7 +24,7 @@ export const cocktailSchema = Joi.object({
   instructionsRU: Joi.string(),
   instructionsPL: Joi.string(),
   instructionsUK: Joi.string(),
-  drinkThumb: Joi.string().required(),
+  drinkThumb: Joi.string(),
   // ingredients: Joi.array().items(Joi.string().required()).min(2).required(),
   ingredients: Joi.array()
     .items(

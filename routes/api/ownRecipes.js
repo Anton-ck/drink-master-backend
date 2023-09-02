@@ -5,6 +5,7 @@ import isEmptyBody from "../../middlewares/isEmptyBody.js";
 import validateBody from "../../middlewares/validateBody.js";
 import upload from "../../middlewares/upload.js";
 import { cocktailSchema } from "../../schemas/cocktails.js";
+import jsonParse from "../../middlewares/parseJson.js";
 
 const ownRouter = express.Router();
 
@@ -15,6 +16,7 @@ ownRouter.post(
   authenticate,
   upload.single("drinkThumb"),
   isEmptyBody,
+  jsonParse,
   validateBody(cocktailSchema),
   controllers.addOwn
 );

@@ -22,7 +22,7 @@ const getOwn = async (req, res) => {
 };
 
 const addOwn = async (req, res) => {
-  // console.log(req);
+
   const { _id: owner } = req.user;
   const fileUrl = req.file?.path;
   const result = await Cocktail.create({

@@ -47,6 +47,10 @@
     {
       "name": "Ingredients",
       "description": "Endpoints for ingredients which user can use in recipes"
+    },
+    {
+      "name": "Search",
+      "description": "Endpoints for search recipes"
     }
   ],
 
@@ -180,7 +184,9 @@
                     "value": {
                       "token": "tokenexample",
                       "user": {
-                        "email": "example@example.com"
+                        "name": "Example",
+                        "email": "example@example.com",
+                        "avatarURL": "https://res.cloudinary.com/Example"
                       }
                     }
                   }
@@ -538,6 +544,32 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Recipes per page",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 8
+            },
+            "format": "int64"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -820,6 +852,32 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Recipes per page",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 8
+            },
+            "format": "int64"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -1287,6 +1345,19 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Recipes per page",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 3
+            },
+            "format": "int64"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -1398,6 +1469,32 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Recipes per page",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 8
+            },
+            "format": "int64"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -1507,6 +1604,32 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Recipes per page",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 8
+            },
+            "format": "int64"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -1607,6 +1730,32 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Recipes per page",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 4
+            },
+            "format": "int64"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -1686,6 +1835,127 @@
                         "thumb-small": "http://res.cloudinary.com"
                       }
                     ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Search cocktail by key word in the category, ingredient or name",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Recipe category",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ingredients",
+            "in": "query",
+            "description": "Recipe ingredients",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Recipes per page",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "format": "int64"
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "OK (Cocktails were successfully found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchCocktailsResponse"
+                },
+                "examples": {
+                  "SearchCocktailsResponseExample": {
+                    "value": {
+                      "totalHits": 7,
+                      "drinks": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "404": {
+            "description": "Not Found (There is no such a cocktail in the data-base)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NotFoundErrorExample": {
+                    "value": {
+                      "message": "drinks not found"
+                    }
                   }
                 }
               }
@@ -2261,6 +2531,30 @@
           }
         },
         "format": "array"
+      },
+
+      "SearchCocktailsResponse": {
+        "type": "object",
+        "properties": {
+          "totalHits": {
+            "type": "integer",
+            "description": "Number of cocktail that were found",
+            "format": "int64"
+          },
+          "drinks": {
+            "type": "array",
+            "properties": {
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CocktailRecipe"
+                  }
+                ]
+              }
+            },
+            "format": "array"
+          }
+        }
       }
     },
 

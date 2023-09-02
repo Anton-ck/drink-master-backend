@@ -16,7 +16,7 @@ export const cocktailSchema = Joi.object({
   glass: Joi.string()
     .valid(...glassess)
     .required(),
-  instructions: Joi.string().min(30).required(),
+  instructions: Joi.string().min(3).required(),
   instructionsES: Joi.string(),
   instructionsDE: Joi.string(),
   instructionsFR: Joi.string(),
@@ -29,6 +29,8 @@ export const cocktailSchema = Joi.object({
   ingredients: Joi.array()
     .items(
       Joi.object({
+        _id: Joi.string().required(),
+        measure: Joi.string().required(),
         title: Joi.string().required(),
         ingredientThumb: Joi.string().required(),
         ["thumb-medium"]: Joi.string().required(),

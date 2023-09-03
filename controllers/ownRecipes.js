@@ -39,16 +39,22 @@ const addOwn = async (req, res) => {
 
 const deleteOwn = async (req, res) => {
   const { id } = req.params;
+  const { _id: user } = req.user;
 
   const cocktail = await Cocktail.findById(id);
+
   if (!cocktail) {
     throw HttpError(404, "The requested cocktail was not found");
+  }
+
+  if (cocktail.owner.toString() !== user.toString()) {
+    throw HttpError(403, "You can`t delete other users recipe");
   }
 
   await Cocktail.findByIdAndRemove(id);
 
   res.json({
-    message: "Cocktail deleted",
+    message: "Cocktail has been deleted",
   });
 };
 

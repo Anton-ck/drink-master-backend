@@ -60,7 +60,6 @@
         "tags": ["Auth"],
         "summary": "User registration",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
 
         "requestBody": {
           "description": "Registration object",
@@ -94,6 +93,7 @@
                 "examples": {
                   "signupSuccessfulResponseExample": {
                     "value": {
+                      "token": "tokenexample",
                       "user": {
                         "name": "Example",
                         "email": "example@example.com"
@@ -149,7 +149,6 @@
         "tags": ["Auth"],
         "summary": "User login",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
 
         "requestBody": {
           "description": "Login object",
@@ -236,19 +235,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "User logout",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -281,19 +268,7 @@
       "get": {
         "tags": ["Auth"],
         "summary": "Get current user`s info",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -342,19 +317,7 @@
       "patch": {
         "tags": ["Auth"],
         "summary": "Changing user`s info",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -438,19 +401,7 @@
       "patch": {
         "tags": ["Auth"],
         "summary": "Changing user`s avatar",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -462,7 +413,7 @@
                 "$ref": "#/components/schemas/ChangingaAvatarRequest"
               },
               "encoding": {
-                "img": {
+                "avatarURL": {
                   "contentType": "image/png, image/jpeg, image/jpg",
                   "style": "form"
                 }
@@ -534,17 +485,6 @@
         "tags": ["Own Recipes"],
         "summary": "Get current user`s saved recipes",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "page",
             "in": "query",
@@ -631,19 +571,7 @@
       "post": {
         "tags": ["Own Recipes"],
         "summary": "Creating a new cocktail recipe",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -749,22 +677,11 @@
       }
     },
 
-    "/own/:id": {
+    "/own/{id}": {
       "delete": {
         "tags": ["Own Recipes"],
         "summary": "Delete one user`s recipes",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "id",
             "in": "path",
@@ -842,17 +759,6 @@
         "tags": ["Favorite Recipes"],
         "summary": "Get current user`s favorite recipes",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "page",
             "in": "query",
@@ -937,22 +843,11 @@
       }
     },
 
-    "/favorite/:recipId": {
+    "/favorite/{recipId}": {
       "patch": {
         "tags": ["Favorite Recipes"],
         "summary": "Add one recipe to user`s favorite",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "recipId",
             "in": "path",
@@ -1028,17 +923,6 @@
         "tags": ["Favorite Recipes"],
         "summary": "Delete one user`s recipes",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "recipId",
             "in": "path",
@@ -1116,6 +1000,7 @@
         "tags": ["Glasses"],
         "summary": "Get collection of glasses",
         "parameters": [],
+        "security": [{ "Bearer": [] }],
 
         "responses": {
           "200": {
@@ -1163,19 +1048,7 @@
       "post": {
         "tags": ["Subscription"],
         "summary": "User subscription",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -1259,19 +1132,7 @@
       "get": {
         "tags": ["All Recipes"],
         "summary": "Get collection of category",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -1335,17 +1196,6 @@
         "tags": ["All Recipes"],
         "summary": "Get collection of cocktails",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "limit",
             "in": "query",
@@ -1443,22 +1293,11 @@
       }
     },
 
-    "/recipes/:id": {
+    "/recipes/{id}": {
       "get": {
         "tags": ["All Recipes"],
         "summary": "Get cocktail by id",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "id",
             "in": "path",
@@ -1578,22 +1417,11 @@
       }
     },
 
-    "/recipes/:category": {
+    "/recipes/{category}": {
       "get": {
         "tags": ["All Recipes"],
         "summary": "Get cocktail by category",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "category",
             "in": "path",
@@ -1721,17 +1549,6 @@
         "summary": "Get collection of popular cocktails",
         "parameters": [
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "page",
             "in": "query",
             "description": "Page number",
@@ -1815,6 +1632,7 @@
         "tags": ["Ingredients"],
         "summary": "Get collection of ingredients",
         "parameters": [],
+        "security": [{ "Bearer": [] }],
 
         "responses": {
           "200": {
@@ -1898,6 +1716,7 @@
             "format": "int64"
           }
         ],
+        "security": [{ "Bearer": [] }],
 
         "responses": {
           "200": {
@@ -2101,7 +1920,7 @@
       "ChangingaAvatarRequest": {
         "type": "object",
         "properties": {
-          "img": {
+          "avatarURL": {
             "type": "string",
             "description": "New user`s avatar",
             "format": "binary"
@@ -2168,6 +1987,19 @@
           },
           "category": {
             "type": "string",
+            "enum": [
+              "Ordinary Drink",
+              "Cocktail",
+              "Shake",
+              "Other/Unknown",
+              "Cocoa",
+              "Shot",
+              "Coffee/Tea",
+              "Homemade Liqueur",
+              "Punch/Party Drink",
+              "Beer",
+              "Soft Drink"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "IBA": {
@@ -2180,6 +2012,40 @@
           },
           "glass": {
             "type": "string",
+            "enum": [
+              "Highball glass",
+              "Cocktail glass",
+              "Old-fashioned glass",
+              "Whiskey Glass",
+              "Collins glass",
+              "Pousse cafe glass",
+              "Champagne flute",
+              "Whiskey sour glass",
+              "Cordial glass",
+              "Brandy snifter",
+              "White wine glass",
+              "Nick and Nora Glass",
+              "Hurricane glass",
+              "Coffee mug",
+              "Shot glass",
+              "Jar",
+              "Irish coffee cup",
+              "Punch bowl",
+              "Pitcher",
+              "Pint glass",
+              "Copper Mug",
+              "Wine Glass",
+              "Beer mug",
+              "Margarita/Coupette glass",
+              "Beer pilsner",
+              "Beer Glass",
+              "Parfait glass",
+              "Mason jar",
+              "Margarita glass",
+              "Martini Glass",
+              "Balloon Glass",
+              "Coupe Glass"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "instructions": {
@@ -2272,7 +2138,6 @@
         "required": [
           "drink",
           "category",
-          "alcoholic",
           "glass",
           "instructions",
           "drinkThumb",
@@ -2289,6 +2154,19 @@
           },
           "category": {
             "type": "string",
+            "enum": [
+              "Ordinary Drink",
+              "Cocktail",
+              "Shake",
+              "Other/Unknown",
+              "Cocoa",
+              "Shot",
+              "Coffee/Tea",
+              "Homemade Liqueur",
+              "Punch/Party Drink",
+              "Beer",
+              "Soft Drink"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "alcoholic": {
@@ -2297,6 +2175,40 @@
           },
           "glass": {
             "type": "string",
+            "enum": [
+              "Highball glass",
+              "Cocktail glass",
+              "Old-fashioned glass",
+              "Whiskey Glass",
+              "Collins glass",
+              "Pousse cafe glass",
+              "Champagne flute",
+              "Whiskey sour glass",
+              "Cordial glass",
+              "Brandy snifter",
+              "White wine glass",
+              "Nick and Nora Glass",
+              "Hurricane glass",
+              "Coffee mug",
+              "Shot glass",
+              "Jar",
+              "Irish coffee cup",
+              "Punch bowl",
+              "Pitcher",
+              "Pint glass",
+              "Copper Mug",
+              "Wine Glass",
+              "Beer mug",
+              "Margarita/Coupette glass",
+              "Beer pilsner",
+              "Beer Glass",
+              "Parfait glass",
+              "Mason jar",
+              "Margarita glass",
+              "Martini Glass",
+              "Balloon Glass",
+              "Coupe Glass"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "instructions": {
@@ -2310,15 +2222,13 @@
           },
           "ingredients": {
             "type": "array",
-            "description": "Array of cocktail ingredients",
             "items": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/Ingredient"
-                }
-              ]
-            },
-            "format": "array"
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "measure": { "type": "string" }
+              }
+            }
           }
         }
       },

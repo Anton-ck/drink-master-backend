@@ -14,7 +14,10 @@ export const loginSchema = Joi.object({
   password: joiPassword.string().minOfLowercase(1).minOfUppercase(1).minOfNumeric(1).required(),
 });
 
+export const refreshSchema = Joi.object({
+  refreshToken: Joi.string().required(),
+});
+
 export const updateUserName = Joi.object({
   name: Joi.string().required(),
 });
-

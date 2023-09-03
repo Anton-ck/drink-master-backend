@@ -3,14 +3,20 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import Cocktail from "../models/recipes.js";
 
 const getOwn = async (req, res) => {
+  console.log("first", req.user);
   const { _id: owner } = req.user;
   const { page = 1, limit = 8, ...query } = req.query;
   const skip = (page - 1) * limit;
+
+  const totalHits = await Cocktail.countDocuments({ owner });
+  console.log("totalHits", totalHits);
 
   const result = await Cocktail.find({ owner, ...query }, "-updatedAt", {
     skip,
     limit,
   }).populate("owner", "email");
+
+  console.log("result", result);
 
   if (result.length === 0) {
     return res.json({
@@ -18,7 +24,7 @@ const getOwn = async (req, res) => {
       cocktails: [],
     });
   }
-  res.json(result);
+  res.json({ totalHits, cocktails: result });
 };
 
 const addOwn = async (req, res) => {

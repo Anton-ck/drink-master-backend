@@ -61,10 +61,10 @@ const deleteFavorite = async (req, res) => {
 //get all favorite cocktails by user
 const getFavorites = async (req, res) => {
   const { _id } = req.user;
-  const { page = 1, limit = 8, ...query } = req.query;
-  const parsedLimit = parseInt(limit);
-  const parsedPage = parseInt(page);
-  const skip = (parsedPage - 1) * parsedLimit;
+  // const { page = 1, limit = 8, ...query } = req.query;
+  // const parsedLimit = parseInt(limit);
+  // const parsedPage = parseInt(page);
+  // const skip = (parsedPage - 1) * parsedLimit;
 
   const userId = _id.toString();
   const totalHits = await Cocktail.countDocuments({ usersFavorite: userId });
@@ -72,9 +72,9 @@ const getFavorites = async (req, res) => {
   const drinks = await Cocktail.find(
     { usersFavorite: userId },
     "-usersFavorite "
-  )
-    .skip(skip) // Skip documents based on the page and limit
-    .limit(parsedLimit); // Limit the number of documents per page
+  );
+  // .skip(skip) // Skip documents based on the page and limit
+  // .limit(parsedLimit); // Limit the number of documents per page
 
   if (drinks.length === 0) {
     return res.json({

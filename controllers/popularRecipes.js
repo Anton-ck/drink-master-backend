@@ -3,7 +3,7 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import Cocktail from "../models/recipes.js";
 
 const getPopular = async (req, res) => {
-  const { page = 1, limit = 4, ...query } = req.query;
+  const { page = 1, limit = 4 } = req.query;
   const parsedLimit = parseInt(limit);
   const popularResult = await Cocktail.aggregate([
     {

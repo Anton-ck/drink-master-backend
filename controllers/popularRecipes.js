@@ -17,6 +17,7 @@ const getPopular = async (req, res) => {
         drink: 1,
         description: 1,
         instructions: 1,
+        drinkThumb: 1,
         favoriteCount: {
           $size: "$usersFavorite",
         },

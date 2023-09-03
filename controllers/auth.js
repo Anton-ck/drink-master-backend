@@ -28,7 +28,7 @@ const signUp = async (req, res) => {
     id: newUser._id,
   };
 
-  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "20m" });
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "1m" });
 
   const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
 
@@ -63,7 +63,7 @@ const signIn = async (req, res) => {
     throw HttpError(401, "Password is wrong");
   }
 
-  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "20m" });
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "30s" });
 
   const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
   await User.findByIdAndUpdate(user._id, { accessToken, refreshToken });
@@ -80,14 +80,14 @@ const getRefreshToken = async (req, res, next) => {
     const { id } = jwt.verify(token, REFRESH_SECRET_KEY);
     const isExist = await User.findOne({ refreshToken: token });
     if (!isExist) {
-      next(HttpError(401), "Token invalid");
+      next(HttpError(403), "Token invalid");
     }
 
     const payload = {
       id,
     };
 
-    const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "20m" });
+    const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "1m" });
 
     const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
 

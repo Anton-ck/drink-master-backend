@@ -46,8 +46,8 @@ const signIn = async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) {
-    throw HttpError(401, "Email is wrong");
+  if (!user || !passwordCompare) {
+    throw HttpError(401, "Email  or password is wrong");
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
@@ -56,9 +56,9 @@ const signIn = async (req, res) => {
     id: user._id,
   };
 
-  if (!passwordCompare) {
-    throw HttpError(401, "Password is wrong");
-  }
+    if (!user || !passwordCompare) {
+      throw HttpError(401, "Email  or password is wrong");
+    }
 
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });

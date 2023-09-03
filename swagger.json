@@ -392,6 +392,24 @@
                 }
               }
             }
+          },
+
+          "404": {
+            "description": "Not Found (There is no such user in the data base)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NotFoundErrorExample": {
+                    "value": {
+                      "message": "Not found"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -475,6 +493,24 @@
                 }
               }
             }
+          },
+
+          "404": {
+            "description": "Not Found (There is no file to upload)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NotFoundErrorExample": {
+                    "value": {
+                      "message": "File not found for upload"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -524,24 +560,41 @@
                 },
                 "examples": {
                   "GetOwnRecipesResponseExample": {
-                    "value": [
-                      {
-                        "_id": "example_cocktail_id",
-                        "drink": "name of cocktail",
-                        "category": "Category of cocktail",
-                        "alcoholic": "Alcoholic",
-                        "glass": "Cocktail glass",
-                        "instructions": "Instruction example",
-                        "drinkThumb": "https://res.cloudinary.com/",
-                        "ingredients": ["ingredient1", "ingredient2"],
-                        "usersFavorite": ["Name1", "Name2"],
-                        "owner": {
-                          "_id": "example_user`s_id",
-                          "email": "example@example.com"
-                        },
-                        "createdAt": "2023-08-27T19:33:05.467Z"
-                      }
-                    ]
+                    "value": {
+                      "totalHits": 7,
+                      "cocktails": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
+                    }
+                  },
+                  "NoOwnCocktailsResponseExample": {
+                    "value": {
+                      "message": "No cocktails have been added yet",
+                      "cocktails": []
+                    }
                   }
                 }
               }
@@ -733,6 +786,24 @@
             }
           },
 
+          "403": {
+            "description": "Forbidden (user doesn`t have access to delete recepies)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "You can`t delete other users recipe"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
           "404": {
             "description": "Not Found (There is no such a cocktail in the data-base)",
             "content": {
@@ -798,24 +869,40 @@
                 },
                 "examples": {
                   "GetFavoriteRecipesResponseExample": {
-                    "value": [
-                      {
-                        "_id": "example_cocktail_id",
-                        "drink": "name of cocktail",
-                        "category": "Category of cocktail",
-                        "alcoholic": "Alcoholic",
-                        "glass": "Cocktail glass",
-                        "instructions": "Instruction example",
-                        "drinkThumb": "https://res.cloudinary.com/",
-                        "ingredients": ["ingredient1", "ingredient2"],
-                        "usersFavorite": ["Name1", "Name2"],
-                        "owner": {
-                          "_id": "example_user`s_id",
-                          "email": "example@example.com"
-                        },
-                        "createdAt": "2023-08-27T19:33:05.467Z"
-                      }
-                    ]
+                    "value": {
+                      "totalHits": 7,
+                      "drinks": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
+                    }
+                  },
+                  "NoFavoriteCocktailsResponseExample": {
+                    "value": {
+                      "message": "No favorite cocktails have been added yet"
+                    }
                   }
                 }
               }
@@ -873,7 +960,33 @@
                 "examples": {
                   "AddToFavoriteRecipesResponseExample": {
                     "value": {
-                      "message": "Cocktail added to favorite"
+                      "totalHits": 7,
+                      "cocktails": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
                     }
                   }
                 }
@@ -948,7 +1061,33 @@
                 "examples": {
                   "DeleteFromFavoritesRecipesResponseExample": {
                     "value": {
-                      "message": "Cocktail deleted from favorite"
+                      "totalHits": 7,
+                      "cocktails": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
                     }
                   }
                 }
@@ -1939,17 +2078,27 @@
       },
 
       "GetOwnRecipesResponse": {
-        "type": "array",
+        "type": "object",
         "properties": {
-          "items": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CocktailRecipe"
+          "totalHits": {
+            "type": "integer",
+            "description": "Number of cocktail that were found",
+            "format": "int64"
+          },
+          "cocktails": {
+            "type": "array",
+            "properties": {
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CocktailRecipe"
+                  }
+                ]
               }
-            ]
+            },
+            "format": "array"
           }
-        },
-        "format": "array"
+        }
       },
 
       "CocktailRecipe": {
@@ -2241,6 +2390,11 @@
             "type": "string",
             "description": "Ingredient name"
           },
+          "measure": {
+            "type": "integer",
+            "description": "Quantity of ingredient",
+            "format": "int64"
+          },
           "ingredientThumb": {
             "type": "string",
             "description": "Link to the large ingredient image"
@@ -2306,9 +2460,23 @@
       "DeleteOwnRecipesResponse": {
         "type": "object",
         "properties": {
-          "message": {
-            "type": "string",
-            "description": "Message about successful recipe deleting"
+          "totalHits": {
+            "type": "integer",
+            "description": "Number of cocktail that were found",
+            "format": "int64"
+          },
+          "cocktails": {
+            "type": "array",
+            "properties": {
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CocktailRecipe"
+                  }
+                ]
+              }
+            },
+            "format": "array"
           }
         }
       },
@@ -2316,9 +2484,23 @@
       "AddToFavoriteRecipesResponse": {
         "type": "object",
         "properties": {
-          "message": {
-            "type": "string",
-            "description": "Message about successful recipe adding to favorite"
+          "totalHits": {
+            "type": "integer",
+            "description": "Number of cocktail that were found",
+            "format": "int64"
+          },
+          "cocktails": {
+            "type": "array",
+            "properties": {
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CocktailRecipe"
+                  }
+                ]
+              }
+            },
+            "format": "array"
           }
         }
       },

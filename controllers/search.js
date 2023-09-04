@@ -26,7 +26,7 @@ const getSearchRecipes = async (req, res) => {
     const skip = (pageNumber - 1) * limit;
 
     const drinks = await Cocktail.find(query)
-        .sort({ createdAt: -1 })
+        .sort({ drink: 1 })
         .skip(skip)
         .limit(limit);
 

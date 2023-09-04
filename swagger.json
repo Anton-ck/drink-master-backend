@@ -60,7 +60,6 @@
         "tags": ["Auth"],
         "summary": "User registration",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
 
         "requestBody": {
           "description": "Registration object",
@@ -94,6 +93,7 @@
                 "examples": {
                   "signupSuccessfulResponseExample": {
                     "value": {
+                      "token": "tokenexample",
                       "user": {
                         "name": "Example",
                         "email": "example@example.com"
@@ -149,7 +149,6 @@
         "tags": ["Auth"],
         "summary": "User login",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
 
         "requestBody": {
           "description": "Login object",
@@ -236,19 +235,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "User logout",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -281,19 +268,7 @@
       "get": {
         "tags": ["Auth"],
         "summary": "Get current user`s info",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -342,19 +317,7 @@
       "patch": {
         "tags": ["Auth"],
         "summary": "Changing user`s info",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -429,6 +392,24 @@
                 }
               }
             }
+          },
+
+          "404": {
+            "description": "Not Found (There is no such user in the data base)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NotFoundErrorExample": {
+                    "value": {
+                      "message": "Not found"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -438,19 +419,7 @@
       "patch": {
         "tags": ["Auth"],
         "summary": "Changing user`s avatar",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -462,7 +431,7 @@
                 "$ref": "#/components/schemas/ChangingaAvatarRequest"
               },
               "encoding": {
-                "img": {
+                "avatarURL": {
                   "contentType": "image/png, image/jpeg, image/jpg",
                   "style": "form"
                 }
@@ -524,6 +493,24 @@
                 }
               }
             }
+          },
+
+          "404": {
+            "description": "Not Found (There is no file to upload)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NotFoundErrorExample": {
+                    "value": {
+                      "message": "File not found for upload"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -534,17 +521,6 @@
         "tags": ["Own Recipes"],
         "summary": "Get current user`s saved recipes",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "page",
             "in": "query",
@@ -584,24 +560,41 @@
                 },
                 "examples": {
                   "GetOwnRecipesResponseExample": {
-                    "value": [
-                      {
-                        "_id": "example_cocktail_id",
-                        "drink": "name of cocktail",
-                        "category": "Category of cocktail",
-                        "alcoholic": "Alcoholic",
-                        "glass": "Cocktail glass",
-                        "instructions": "Instruction example",
-                        "drinkThumb": "https://res.cloudinary.com/",
-                        "ingredients": ["ingredient1", "ingredient2"],
-                        "usersFavorite": ["Name1", "Name2"],
-                        "owner": {
-                          "_id": "example_user`s_id",
-                          "email": "example@example.com"
-                        },
-                        "createdAt": "2023-08-27T19:33:05.467Z"
-                      }
-                    ]
+                    "value": {
+                      "totalHits": 7,
+                      "cocktails": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
+                    }
+                  },
+                  "NoOwnCocktailsResponseExample": {
+                    "value": {
+                      "message": "No cocktails have been added yet",
+                      "cocktails": []
+                    }
                   }
                 }
               }
@@ -631,19 +624,7 @@
       "post": {
         "tags": ["Own Recipes"],
         "summary": "Creating a new cocktail recipe",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -749,22 +730,11 @@
       }
     },
 
-    "/own/:id": {
+    "/own/{id}": {
       "delete": {
         "tags": ["Own Recipes"],
         "summary": "Delete one user`s recipes",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "id",
             "in": "path",
@@ -816,6 +786,24 @@
             }
           },
 
+          "403": {
+            "description": "Forbidden (user doesn`t have access to delete recepies)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "AuthorizationErrorExample": {
+                    "value": {
+                      "message": "You can`t delete other users recipe"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
           "404": {
             "description": "Not Found (There is no such a cocktail in the data-base)",
             "content": {
@@ -842,17 +830,6 @@
         "tags": ["Favorite Recipes"],
         "summary": "Get current user`s favorite recipes",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "page",
             "in": "query",
@@ -892,24 +869,40 @@
                 },
                 "examples": {
                   "GetFavoriteRecipesResponseExample": {
-                    "value": [
-                      {
-                        "_id": "example_cocktail_id",
-                        "drink": "name of cocktail",
-                        "category": "Category of cocktail",
-                        "alcoholic": "Alcoholic",
-                        "glass": "Cocktail glass",
-                        "instructions": "Instruction example",
-                        "drinkThumb": "https://res.cloudinary.com/",
-                        "ingredients": ["ingredient1", "ingredient2"],
-                        "usersFavorite": ["Name1", "Name2"],
-                        "owner": {
-                          "_id": "example_user`s_id",
-                          "email": "example@example.com"
-                        },
-                        "createdAt": "2023-08-27T19:33:05.467Z"
-                      }
-                    ]
+                    "value": {
+                      "totalHits": 7,
+                      "drinks": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
+                    }
+                  },
+                  "NoFavoriteCocktailsResponseExample": {
+                    "value": {
+                      "message": "No favorite cocktails have been added yet"
+                    }
                   }
                 }
               }
@@ -937,22 +930,11 @@
       }
     },
 
-    "/favorite/:recipId": {
+    "/favorite/{recipId}": {
       "patch": {
         "tags": ["Favorite Recipes"],
         "summary": "Add one recipe to user`s favorite",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "recipId",
             "in": "path",
@@ -978,7 +960,33 @@
                 "examples": {
                   "AddToFavoriteRecipesResponseExample": {
                     "value": {
-                      "message": "Cocktail added to favorite"
+                      "totalHits": 7,
+                      "cocktails": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
                     }
                   }
                 }
@@ -1029,17 +1037,6 @@
         "summary": "Delete one user`s recipes",
         "parameters": [
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "recipId",
             "in": "path",
             "description": "Recipe Id",
@@ -1064,7 +1061,33 @@
                 "examples": {
                   "DeleteFromFavoritesRecipesResponseExample": {
                     "value": {
-                      "message": "Cocktail deleted from favorite"
+                      "totalHits": 7,
+                      "cocktails": [
+                        {
+                          "_id": "639b6de9ff77d221f190c51e",
+                          "drink": "Affair",
+                          "category": "Ordinary Drink",
+                          "alcoholic": "Alcoholic",
+                          "glass": "Highball glass",
+                          "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass.",
+                          "drinkThumb": "http://res.cloudinary.com",
+                          "ingredients": [
+                            {
+                              "title": "Strawberry schnapps",
+                              "measure": "2 oz ",
+                              "ingredientThumb": "http://res.cloudinary.com",
+                              "thumb-medium": "http://res.cloudinary.com",
+                              "thumb-small": "http://res.cloudinary.com"
+                            }
+                          ],
+                          "usersFavorite": [
+                            "64e7adf3e24c73d3276e88ff",
+                            "64e66c7c37cd1ffa91e1d8d2"
+                          ],
+                          "updatedAt": "2023-08-31T13:29:01.194Z",
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                        }
+                      ]
                     }
                   }
                 }
@@ -1116,6 +1139,7 @@
         "tags": ["Glasses"],
         "summary": "Get collection of glasses",
         "parameters": [],
+        "security": [{ "Bearer": [] }],
 
         "responses": {
           "200": {
@@ -1163,19 +1187,7 @@
       "post": {
         "tags": ["Subscription"],
         "summary": "User subscription",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
@@ -1259,19 +1271,7 @@
       "get": {
         "tags": ["All Recipes"],
         "summary": "Get collection of category",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -1335,17 +1335,6 @@
         "tags": ["All Recipes"],
         "summary": "Get collection of cocktails",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "limit",
             "in": "query",
@@ -1443,22 +1432,11 @@
       }
     },
 
-    "/recipes/:id": {
+    "/recipes/{id}": {
       "get": {
         "tags": ["All Recipes"],
         "summary": "Get cocktail by id",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "id",
             "in": "path",
@@ -1578,22 +1556,11 @@
       }
     },
 
-    "/recipes/:category": {
+    "/recipes/{category}": {
       "get": {
         "tags": ["All Recipes"],
         "summary": "Get cocktail by category",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "category",
             "in": "path",
@@ -1721,17 +1688,6 @@
         "summary": "Get collection of popular cocktails",
         "parameters": [
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Current user`s token",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "page",
             "in": "query",
             "description": "Page number",
@@ -1815,6 +1771,7 @@
         "tags": ["Ingredients"],
         "summary": "Get collection of ingredients",
         "parameters": [],
+        "security": [{ "Bearer": [] }],
 
         "responses": {
           "200": {
@@ -1898,6 +1855,7 @@
             "format": "int64"
           }
         ],
+        "security": [{ "Bearer": [] }],
 
         "responses": {
           "200": {
@@ -2101,7 +2059,7 @@
       "ChangingaAvatarRequest": {
         "type": "object",
         "properties": {
-          "img": {
+          "avatarURL": {
             "type": "string",
             "description": "New user`s avatar",
             "format": "binary"
@@ -2120,17 +2078,27 @@
       },
 
       "GetOwnRecipesResponse": {
-        "type": "array",
+        "type": "object",
         "properties": {
-          "items": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CocktailRecipe"
+          "totalHits": {
+            "type": "integer",
+            "description": "Number of cocktail that were found",
+            "format": "int64"
+          },
+          "cocktails": {
+            "type": "array",
+            "properties": {
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CocktailRecipe"
+                  }
+                ]
               }
-            ]
+            },
+            "format": "array"
           }
-        },
-        "format": "array"
+        }
       },
 
       "CocktailRecipe": {
@@ -2168,6 +2136,19 @@
           },
           "category": {
             "type": "string",
+            "enum": [
+              "Ordinary Drink",
+              "Cocktail",
+              "Shake",
+              "Other/Unknown",
+              "Cocoa",
+              "Shot",
+              "Coffee/Tea",
+              "Homemade Liqueur",
+              "Punch/Party Drink",
+              "Beer",
+              "Soft Drink"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "IBA": {
@@ -2180,6 +2161,40 @@
           },
           "glass": {
             "type": "string",
+            "enum": [
+              "Highball glass",
+              "Cocktail glass",
+              "Old-fashioned glass",
+              "Whiskey Glass",
+              "Collins glass",
+              "Pousse cafe glass",
+              "Champagne flute",
+              "Whiskey sour glass",
+              "Cordial glass",
+              "Brandy snifter",
+              "White wine glass",
+              "Nick and Nora Glass",
+              "Hurricane glass",
+              "Coffee mug",
+              "Shot glass",
+              "Jar",
+              "Irish coffee cup",
+              "Punch bowl",
+              "Pitcher",
+              "Pint glass",
+              "Copper Mug",
+              "Wine Glass",
+              "Beer mug",
+              "Margarita/Coupette glass",
+              "Beer pilsner",
+              "Beer Glass",
+              "Parfait glass",
+              "Mason jar",
+              "Margarita glass",
+              "Martini Glass",
+              "Balloon Glass",
+              "Coupe Glass"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "instructions": {
@@ -2272,7 +2287,6 @@
         "required": [
           "drink",
           "category",
-          "alcoholic",
           "glass",
           "instructions",
           "drinkThumb",
@@ -2289,6 +2303,19 @@
           },
           "category": {
             "type": "string",
+            "enum": [
+              "Ordinary Drink",
+              "Cocktail",
+              "Shake",
+              "Other/Unknown",
+              "Cocoa",
+              "Shot",
+              "Coffee/Tea",
+              "Homemade Liqueur",
+              "Punch/Party Drink",
+              "Beer",
+              "Soft Drink"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "alcoholic": {
@@ -2297,6 +2324,40 @@
           },
           "glass": {
             "type": "string",
+            "enum": [
+              "Highball glass",
+              "Cocktail glass",
+              "Old-fashioned glass",
+              "Whiskey Glass",
+              "Collins glass",
+              "Pousse cafe glass",
+              "Champagne flute",
+              "Whiskey sour glass",
+              "Cordial glass",
+              "Brandy snifter",
+              "White wine glass",
+              "Nick and Nora Glass",
+              "Hurricane glass",
+              "Coffee mug",
+              "Shot glass",
+              "Jar",
+              "Irish coffee cup",
+              "Punch bowl",
+              "Pitcher",
+              "Pint glass",
+              "Copper Mug",
+              "Wine Glass",
+              "Beer mug",
+              "Margarita/Coupette glass",
+              "Beer pilsner",
+              "Beer Glass",
+              "Parfait glass",
+              "Mason jar",
+              "Margarita glass",
+              "Martini Glass",
+              "Balloon Glass",
+              "Coupe Glass"
+            ],
             "description": "Category of the cocktail, should be chosen from suggested list of categories"
           },
           "instructions": {
@@ -2310,15 +2371,13 @@
           },
           "ingredients": {
             "type": "array",
-            "description": "Array of cocktail ingredients",
             "items": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/Ingredient"
-                }
-              ]
-            },
-            "format": "array"
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "measure": { "type": "string" }
+              }
+            }
           }
         }
       },
@@ -2330,6 +2389,11 @@
           "title": {
             "type": "string",
             "description": "Ingredient name"
+          },
+          "measure": {
+            "type": "integer",
+            "description": "Quantity of ingredient",
+            "format": "int64"
           },
           "ingredientThumb": {
             "type": "string",
@@ -2396,9 +2460,23 @@
       "DeleteOwnRecipesResponse": {
         "type": "object",
         "properties": {
-          "message": {
-            "type": "string",
-            "description": "Message about successful recipe deleting"
+          "totalHits": {
+            "type": "integer",
+            "description": "Number of cocktail that were found",
+            "format": "int64"
+          },
+          "cocktails": {
+            "type": "array",
+            "properties": {
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CocktailRecipe"
+                  }
+                ]
+              }
+            },
+            "format": "array"
           }
         }
       },
@@ -2406,9 +2484,23 @@
       "AddToFavoriteRecipesResponse": {
         "type": "object",
         "properties": {
-          "message": {
-            "type": "string",
-            "description": "Message about successful recipe adding to favorite"
+          "totalHits": {
+            "type": "integer",
+            "description": "Number of cocktail that were found",
+            "format": "int64"
+          },
+          "cocktails": {
+            "type": "array",
+            "properties": {
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CocktailRecipe"
+                  }
+                ]
+              }
+            },
+            "format": "array"
           }
         }
       },

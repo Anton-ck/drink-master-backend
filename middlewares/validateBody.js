@@ -12,6 +12,12 @@ const validateBody = (schema) => {
         case "any.required":
           throw HttpError(400, `Missing required ${requireFieldError} field!`);
 
+        case "array.min":
+          throw HttpError(
+            400,
+            `Please add at least ${errorContext.limit} ${requireFieldError}`
+          );
+
         case "string.min":
           throw HttpError(400, `${error.details[0].message}`);
 

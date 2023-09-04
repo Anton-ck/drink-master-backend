@@ -16,26 +16,30 @@ const getCategories = async (req, res) => {
   res.json(result);
 };
 
-const getCocktailParam = async (req, res) => {
-  const { param } = req.params;
-  const isId = /^[0-9a-fA-F]{24}$/.test(param);
-  if (isId) {
-    const result = await Cocktail.findById(param);
-    if (!result) {
-      throw HttpError(404, `Cocktail with id=${id} not found`);
-    }
-    res.json(result);
-  } else {
-    const { page = 1, limit = 8, ...query } = req.query;
-    const skip = (page - 1) * limit;
-    const result = await Cocktail.find({ category: param })
-      .skip(skip)
-      .limit(limit);
-    if (!result || result.length === 0) {
-      throw HttpError(404, `Cocktail in category "${param}" not found`);
-    }
-    res.json(result);
+const getCocktailsById = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const result = await Cocktail.findById(id);
+
+  if (!result) {
+    throw HttpError(404, "Sorry, no drinks were found");
   }
+  res.json(result);
+};
+
+const getCocktailByCategory = async (req, res) => {
+  const { category, page = 1, limit = 8 } = req.query;
+
+  const query = {};
+  category && (query.category = category);
+  const skip = (page - 1) * limit;
+
+  const result = await Cocktail.find({ category }).skip(skip).limit(limit);
+
+  if (!result || result.length === 0) {
+    throw HttpError(404, `Cocktail in category "${category}" not found`);
+  }
+  res.json(result);
 };
 
 const getCocktailsForMain = async (req, res) => {
@@ -57,6 +61,7 @@ const getCocktailsForMain = async (req, res) => {
 
 export default {
   getCategories: ctrlWrapper(getCategories),
-  getCocktailParam: ctrlWrapper(getCocktailParam),
+  getCocktailByCategory: ctrlWrapper(getCocktailByCategory),
+  getCocktailsById: ctrlWrapper(getCocktailsById),
   getCocktailsForMain: ctrlWrapper(getCocktailsForMain),
 };

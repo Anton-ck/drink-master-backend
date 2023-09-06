@@ -193,6 +193,7 @@
               }
             }
           },
+
           "400": {
             "description": "Bad request (invalid request body)",
             "content": {
@@ -210,6 +211,7 @@
               }
             }
           },
+
           "401": {
             "description": "Unauthorized (email or password is wrong)",
             "content": {
@@ -220,7 +222,7 @@
                 "examples": {
                   "AuthorizationErrorExample": {
                     "value": {
-                      "message": "Email is wrong"
+                      "message": "Email or password is wrong"
                     }
                   }
                 }
@@ -370,6 +372,11 @@
                     "value": {
                       "message": "\"name\" is not allowed to be empty"
                     }
+                  },
+                  "ChangingInfovalidationErrorExample2": {
+                    "value": {
+                      "message": "Missing required name field!"
+                    }
                   }
                 }
               }
@@ -451,7 +458,7 @@
                 "examples": {
                   "ChangingAvatarSuccessfulResponseExample": {
                     "value": {
-                      "avatarURL": "https://res.cloudinary.com/Example"
+                      "avatarURL": "https://res.cloudinary.com/Example.jpg"
                     }
                   }
                 }
@@ -585,7 +592,11 @@
                             "64e66c7c37cd1ffa91e1d8d2"
                           ],
                           "updatedAt": "2023-08-31T13:29:01.194Z",
-                          "description": "The spring punch is a highball cocktail of vodka and liqueur."
+                          "description": "The spring punch is a highball cocktail of vodka and liqueur.",
+                          "owner": {
+                            "_id": "64f7797bc336fbddbd2a968c",
+                            "email": "example@example.com"
+                          }
                         }
                       ]
                     }
@@ -760,7 +771,7 @@
                 "examples": {
                   "DeleteOwnRecipesResponseExample": {
                     "value": {
-                      "message": "Cocktail deleted"
+                      "message": "Cocktail has been deleted"
                     }
                   }
                 }
@@ -2374,8 +2385,12 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "measure": { "type": "string" }
+                "_id": { "type": "string" },
+                "measure": { "type": "string" },
+                "title": { "type": "string" },
+                "ingredientThumb": { "type": "string" },
+                "thumb-medium": { "type": "string" },
+                "thumb-small": { "type": "string" }
               }
             }
           }

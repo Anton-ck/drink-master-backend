@@ -30,7 +30,7 @@ router.post(
   controllers.signIn
 );
 
-router.post("/refresh", validateBody(refreshSchema), controllers.getRefreshToken);
+router.post("/refreshUser", validateBody(refreshSchema), controllers.getRefreshToken);
 
 router.get("/current", authenticate, controllers.getCurrentUser);
 

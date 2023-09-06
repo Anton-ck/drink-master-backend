@@ -28,7 +28,7 @@ const signUp = async (req, res) => {
     id: newUser._id,
   };
 
-  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "1m" });
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "10s" });
 
   const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
 
@@ -45,21 +45,21 @@ const signUp = async (req, res) => {
 };
 
 const signIn = async (req, res) => {
-   const { email, password } = req.body;
+  const { email, password } = req.body;
 
-   const user = await User.findOne({ email });
-   const passwordCompare = await bcrypt.compare(password, user.password);
-   if (!user || !passwordCompare) {
-     throw HttpError(401, "Email  or password is wrong");
-   }
+  const user = await User.findOne({ email });
+  const passwordCompare = await bcrypt.compare(password, user.password);
+  if (!user || !passwordCompare) {
+    throw HttpError(401, "Email  or password is wrong");
+  }
 
-   const payload = {
-     id: user._id,
-   };
+  const payload = {
+    id: user._id,
+  };
 
-   if (!user || !passwordCompare) {
-     throw HttpError(401, "Email  or password is wrong");
-   }
+  if (!user || !passwordCompare) {
+    throw HttpError(401, "Email  or password is wrong");
+  }
 
   const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "30s" });
 
@@ -76,6 +76,7 @@ const getRefreshToken = async (req, res, next) => {
   const { refreshToken: token } = req.body;
   try {
     const { id } = jwt.verify(token, REFRESH_SECRET_KEY);
+
     const isExist = await User.findOne({ refreshToken: token });
     if (!isExist) {
       next(HttpError(403), "Token invalid");
@@ -85,12 +86,13 @@ const getRefreshToken = async (req, res, next) => {
       id,
     };
 
-    const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "1m" });
+    const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "30s" });
 
     const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
 
-    res.json({ accessToken, refreshToken });
+    await User.findByIdAndUpdate(id, { accessToken, refreshToken });
 
+    res.json({ accessToken, refreshToken });
   } catch (error) {
     next(HttpError(403), error.message);
   }

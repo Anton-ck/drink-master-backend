@@ -21,7 +21,11 @@ const userSchema = new Schema(
       minlength: 6,
       required: [true, "Set password for user"],
     },
-    token: {
+    accessToken: {
+      type: String,
+      default: "",
+    },
+    refreshToken: {
       type: String,
       default: "",
     },

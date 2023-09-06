@@ -4,6 +4,7 @@ import {
   registerSchema,
   loginSchema,
   updateUserName,
+  refreshSchema
 } from "../../schemas/user.js";
 
 import validateBody from "../../middlewares/validateBody.js";
@@ -28,6 +29,8 @@ router.post(
   validateBody(loginSchema),
   controllers.signIn
 );
+
+router.post("/refreshUser", validateBody(refreshSchema), controllers.getRefreshToken);
 
 router.get("/current", authenticate, controllers.getCurrentUser);
 

@@ -8,10 +8,10 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
 dotenv.config();
 
-const { SECRET_KEY } = process.env;
+const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
 
 const signUp = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { email, password } = req.body;
   const user = await User.findOne({ email });
 
   if (user) {
@@ -28,12 +28,15 @@ const signUp = async (req, res) => {
     id: newUser._id,
   };
 
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "10s" });
 
-  await User.findByIdAndUpdate(newUser._id, { token });
+  const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
+
+  await User.findByIdAndUpdate(newUser._id, { accessToken, refreshToken });
 
   res.status(201).json({
-    token,
+    accessToken,
+    refreshToken,
     user: {
       name: newUser.name,
       email: newUser.email,
@@ -58,12 +61,41 @@ const signIn = async (req, res) => {
     throw HttpError(401, "Email  or password is wrong");
   }
 
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
-  await User.findByIdAndUpdate(user._id, { token });
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "30s" });
+
+  const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
+  await User.findByIdAndUpdate(user._id, { accessToken, refreshToken });
   res.json({
-    token,
+    accessToken,
+    refreshToken,
     user: { name: user.name, email: user.email, avatarURL: user.avatarURL },
   });
+};
+
+const getRefreshToken = async (req, res, next) => {
+  const { refreshToken: token } = req.body;
+  try {
+    const { id } = jwt.verify(token, REFRESH_SECRET_KEY);
+
+    const isExist = await User.findOne({ refreshToken: token });
+    if (!isExist) {
+      next(HttpError(403), "Token invalid");
+    }
+
+    const payload = {
+      id,
+    };
+
+    const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, { expiresIn: "30s" });
+
+    const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: "7d" });
+
+    await User.findByIdAndUpdate(id, { accessToken, refreshToken });
+
+    res.json({ accessToken, refreshToken });
+  } catch (error) {
+    next(HttpError(403), error.message);
+  }
 };
 
 const getCurrentUser = async (req, res) => {
@@ -78,7 +110,7 @@ const getCurrentUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { accessToken: "", refreshToken: "" });
   res.status(204).json();
 };
 
@@ -110,6 +142,7 @@ const updateAvatar = async (req, res) => {
 export default {
   signUp: ctrlWrapper(signUp),
   signIn: ctrlWrapper(signIn),
+  getRefreshToken: ctrlWrapper(getRefreshToken),
   getCurrentUser: ctrlWrapper(getCurrentUser),
   logoutUser: ctrlWrapper(logoutUser),
   updateUserName: ctrlWrapper(updateUserName),

@@ -1458,32 +1458,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "default": 1
-            },
-            "format": "int64"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Recipes per page",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "default": 8
-            },
-            "format": "int64"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -1556,7 +1530,7 @@
                 "examples": {
                   "NotFoundErrorExample": {
                     "value": {
-                      "message": "Cocktail with id 639b6de9ff77d221f190c51e not found"
+                      "message": "Sorry, no drinks were found"
                     }
                   }
                 }
@@ -1567,7 +1541,7 @@
       }
     },
 
-    "/recipes/{category}": {
+    "/recipes": {
       "get": {
         "tags": ["All Recipes"],
         "summary": "Get cocktail by category",

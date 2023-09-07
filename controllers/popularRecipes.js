@@ -1,4 +1,3 @@
-import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import Cocktail from "../models/recipes.js";
 
@@ -8,7 +7,7 @@ const getPopular = async (req, res) => {
   const popularResult = await Cocktail.aggregate([
     {
       $match: {
-        usersFavorite: { $exists: true, $ne: [] }, //Exclude documents without a field or with an empty array
+        usersFavorite: { $exists: true, $ne: [] },
       },
     },
     {
@@ -24,13 +23,13 @@ const getPopular = async (req, res) => {
       },
     },
     {
-      $sort: { favoriteCount: -1 }, //Sort by ascending array length
+      $sort: { favoriteCount: -1 },
     },
     {
       $skip: (page - 1) * parsedLimit,
     },
     {
-      $limit: parsedLimit, //Limiting the number of documents per page
+      $limit: parsedLimit,
     },
   ]);
 

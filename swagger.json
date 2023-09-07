@@ -656,13 +656,22 @@
                     "glass": "Cocktail glass",
                     "instructions": "Instruction example",
                     "drinkThumb": "https://res.cloudinary.com/",
-                    "ingredients": ["ingredient1", "ingredient2"],
-                    "usersFavorite": ["Name1", "Name2"],
-                    "owner": {
-                      "_id": "example_user`s_id",
-                      "email": "example@example.com"
-                    },
-                    "createdAt": "2023-08-27T19:33:05.467Z"
+                    "ingredients": [
+                      {
+                        "_id": "64f5bcc8c175b57075cf2bf2",
+                        "title": "Light rum",
+                        "ingredientThumb": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169605/cocktails-v1/ingredient/Light%20rum.png",
+                        "thumb-medium": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169605/cocktails-v1/ingredient/Light%20rum-Medium.png",
+                        "thumb-small": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169605/cocktails-v1/ingredient/Light%20rum-Small.png"
+                      },
+                      {
+                        "_id": "64f5bcc8c175b57075cf2bf3",
+                        "title": "Applejack",
+                        "ingredientThumb": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169604/cocktails-v1/ingredient/Applejack.png",
+                        "thumb-medium": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169604/cocktails-v1/ingredient/Applejack-Medium.png",
+                        "thumb-small": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169604/cocktails-v1/ingredient/Applejack-Small.png"
+                      }
+                    ]
                   }
                 }
               }
@@ -689,7 +698,22 @@
                       "instructions": "Instruction example",
                       "drinkThumb": "https://res.cloudinary.com/",
                       "ingredients": ["ingredient1", "ingredient2"],
-                      "usersFavorite": ["Name1", "Name2"],
+                      "usersFavorite": [
+                        {
+                          "_id": "64f5bcc8c175b57075cf2bf2",
+                          "title": "Light rum",
+                          "ingredientThumb": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169605/cocktails-v1/ingredient/Light%20rum.png",
+                          "thumb-medium": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169605/cocktails-v1/ingredient/Light%20rum-Medium.png",
+                          "thumb-small": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169605/cocktails-v1/ingredient/Light%20rum-Small.png"
+                        },
+                        {
+                          "_id": "64f5bcc8c175b57075cf2bf3",
+                          "title": "Applejack",
+                          "ingredientThumb": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169604/cocktails-v1/ingredient/Applejack.png",
+                          "thumb-medium": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169604/cocktails-v1/ingredient/Applejack-Medium.png",
+                          "thumb-small": "https://res.cloudinary.com/dec1shvoo/image/upload/v1689169604/cocktails-v1/ingredient/Applejack-Small.png"
+                        }
+                      ],
                       "owner": {
                         "_id": "example_user`s_id",
                         "email": "example@example.com"
@@ -2380,9 +2404,8 @@
             "description": "Ingredient name"
           },
           "measure": {
-            "type": "integer",
-            "description": "Quantity of ingredient",
-            "format": "int64"
+            "type": "string",
+            "description": "Quantity of ingredient"
           },
           "ingredientThumb": {
             "type": "string",
